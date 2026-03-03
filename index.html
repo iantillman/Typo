@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Typo — Text Editor</title>
-  <meta name="description" content="Typo is a simple web-based text editor in a single HTML file." />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Typo</title>
+  <meta name="description" content="Typo — a minimalist text editor in a single HTML file." />
 
-  <!-- Inter font -->
+  <!-- Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -14,488 +14,526 @@
   <style>
     :root{
       --bg:#f8fbff;
+      --panel:#ffffff;
       --fg:#0b2a4a;
       --muted:#6e87a0;
       --primary:#2563eb;
-      --ring:rgba(37,99,235,.25);
-      --border:#e6eef7;
-      --card:rgba(255,255,255,.7);
+      --primary-500:#3b82f6;
+      --border:rgba(11,42,74,.12);
+      --shadow:0 10px 30px rgba(11,42,74,.08);
+      --ring:rgba(37,99,235,.22);
+      --radius:18px;
+      --radius-sm:12px;
+      --font: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     }
+
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
-      height:100vh;
-      display:flex;
-      flex-direction:column;
-      font-family:"Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      background:var(--bg);
+      font-family:var(--font);
+      background:linear-gradient(180deg, var(--bg), #ffffff);
       color:var(--fg);
     }
 
-    header{
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      padding:18px 16px 26px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      min-height:100%;
+    }
+
+    .topbar{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      padding:14px 18px;
-      background:#fff;
-      border-bottom:1px solid var(--border);
-      gap:12px;
-    }
-    .left{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:160px;
-    }
-    .logo{
-      width:40px;height:40px;
-      border:2px solid var(--primary);
-      border-radius:10px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:700;
-      font-size:20px;
-      line-height:1;
-      color:var(--primary);
-      user-select:none;
-      background:#fff;
-    }
-    .brand{
-      font-size:20px;
-      font-weight:700;
-      letter-spacing:-0.01em;
+      gap:14px;
+      padding:14px 14px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
     }
 
-    .toolbar{
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:280px;
+    }
+
+    .tile{
+      width:42px;
+      height:42px;
+      border-radius:12px;
+      background:#fff;
+      border:1px solid rgba(37,99,235,.25);
+      box-shadow:0 8px 18px rgba(37,99,235,.12);
+      display:grid;
+      place-items:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .tile:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(circle at 8px 8px, rgba(37,99,235,.18) 0 2px, transparent 3px),
+        radial-gradient(circle at 22px 22px, rgba(37,99,235,.12) 0 2px, transparent 3px);
+      pointer-events:none;
+    }
+    .tile span{
+      position:relative;
+      font-weight:800;
+      font-size:22px;
+      letter-spacing:-0.02em;
+      color:var(--primary);
+      line-height:1;
+      font-family:var(--font);
+    }
+
+    /* Filename (replaces "Typo" label) */
+    .filename{
       display:flex;
       align-items:center;
       gap:8px;
+      padding:6px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:rgba(248,251,255,.6);
+    }
+    .filename label{
+      font-size:12px;
+      color:var(--muted);
+      user-select:none;
+    }
+    .filename input{
+      width:170px;
+      border:0;
+      outline:0;
+      background:transparent;
+      font:600 14px/1.2 var(--font);
+      color:var(--fg);
+    }
+    .filename .ext{
+      font-size:12px;
+      color:var(--muted);
+      user-select:none;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
       flex-wrap:wrap;
       justify-content:flex-end;
     }
+
     .btn{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border-radius:10px;
+      appearance:none;
       border:1px solid var(--border);
       background:#fff;
-      cursor:pointer;
-      font-size:13px;
-      font-weight:600;
       color:var(--fg);
-      user-select:none;
-    }
-    .btn.primary{
-      background:var(--primary);
-      border-color:transparent;
-      color:#fff;
-    }
-    .btn:hover{filter:brightness(0.98)}
-    .btn:active{transform:translateY(0.5px)}
-    .kbd{
-      font-size:11px;
-      font-weight:700;
-      padding:2px 6px;
-      border-radius:8px;
-      border:1px solid var(--border);
-      color:var(--muted);
-      background:rgba(248,251,255,0.8);
-    }
-    .btn.primary .kbd{
-      border-color:rgba(255,255,255,0.35);
-      color:rgba(255,255,255,0.95);
-      background:rgba(255,255,255,0.12);
-    }
-
-    main{
-      flex:1;
-      padding:18px;
-      display:flex;
-      min-height:0;
-    }
-    .editorWrap{
-      flex:1;
-      display:flex;
-      border-radius:14px;
-      padding:14px;
-      background:var(--card);
-      border:1px solid var(--border);
-      box-shadow:0 1px 0 rgba(11,42,74,0.04);
-      min-height:0;
-    }
-    .editorWrap:focus-within{
-      background:#fff;
-      border-color:rgba(37,99,235,0.35);
-      box-shadow:0 0 0 4px var(--ring);
-    }
-    textarea{
-      width:100%;
-      height:100%;
-      border:none;
-      outline:none;
-      resize:none;
-      background:transparent;
-      color:var(--fg);
-      font-family:"Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      font-size:16px;
-      line-height:1.65;
-      min-height:0;
-    }
-    textarea::placeholder{color:var(--muted);opacity:.9}
-
-    footer{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:10px 18px;
-      background:#fff;
-      border-top:1px solid var(--border);
-      font-size:12px;
-      color:var(--muted);
-    }
-    .statusRow{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:160px;
-    }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:4px 10px;
-      border:1px solid var(--border);
+      padding:10px 12px;
       border-radius:999px;
-      background:rgba(248,251,255,0.8);
-      color:var(--muted);
-      font-weight:600;
-      max-width:55vw;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      font:600 13px/1 var(--font);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      transition:transform .05s ease, box-shadow .2s ease, border-color .2s ease;
+      box-shadow:0 6px 14px rgba(11,42,74,.06);
       white-space:nowrap;
     }
-    .rightMeta{
+    .btn:active{transform:translateY(1px)}
+    .btn:hover{border-color:rgba(37,99,235,.35)}
+    .btn.primary{
+      background:linear-gradient(180deg, var(--primary-500), var(--primary));
+      color:#fff;
+      border-color:rgba(37,99,235,.45);
+      box-shadow:0 10px 22px rgba(37,99,235,.22);
+    }
+    .btn.danger{
+      border-color:rgba(220,38,38,.25);
+    }
+    .btn.danger:hover{border-color:rgba(220,38,38,.45)}
+    .kbd{
+      font:600 11px/1 var(--font);
+      color:var(--muted);
+      border:1px solid rgba(11,42,74,.12);
+      border-bottom-color:rgba(11,42,74,.18);
+      background:rgba(248,251,255,.9);
+      padding:3px 7px;
+      border-radius:8px;
+    }
+    .btn.primary .kbd{
+      color:rgba(255,255,255,.9);
+      border-color:rgba(255,255,255,.25);
+      background:rgba(255,255,255,.15);
+    }
+
+    .editorShell{
+      flex:1;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:14px;
       display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:60vh;
+    }
+
+    .metaRow{
+      display:flex;
+      justify-content:space-between;
       align-items:center;
       gap:10px;
-      justify-content:flex-end;
-      flex:1;
+      padding:2px 2px 0;
     }
-    .toggle{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      cursor:pointer;
-      user-select:none;
-      padding:6px 10px;
-      border-radius:10px;
-      border:1px solid var(--border);
-      background:#fff;
-      color:var(--fg);
-      font-weight:600;
-      font-size:13px;
+
+    .hint{
+      color:var(--muted);
+      font-size:12px;
     }
-    .toggle input{accent-color:var(--primary)}
-    .wordcount{
+
+    .wc{
+      display:none;
+      color:var(--muted);
+      font-size:12px;
       font-variant-numeric:tabular-nums;
-      font-weight:700;
-      color:var(--fg);
+      padding:6px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:rgba(248,251,255,.6);
     }
-    .hidden{display:none !important;}
+    .wc.show{display:inline-flex}
+
+    textarea{
+      width:100%;
+      flex:1;
+      resize:none;
+      border:1px solid rgba(11,42,74,.10);
+      border-radius:var(--radius-sm);
+      outline:0;
+      padding:14px 14px;
+      font:400 15px/1.5 var(--font);
+      color:var(--fg);
+      background:linear-gradient(180deg, #fff, rgba(248,251,255,.35));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
+    }
+    textarea:focus{
+      border-color:rgba(37,99,235,.45);
+      box-shadow:0 0 0 4px var(--ring), inset 0 1px 0 rgba(255,255,255,.7);
+      background:#fff;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background:rgba(11,42,74,.92);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.14);
+      padding:10px 12px;
+      border-radius:999px;
+      font:600 13px/1 var(--font);
+      box-shadow:0 16px 40px rgba(11,42,74,.22);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .18s ease, transform .18s ease;
+      max-width:min(680px, calc(100vw - 28px));
+      text-align:center;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(-2px);
+    }
+
+    .sr-only{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      border:0;
+    }
   </style>
 </head>
 
 <body>
-  <header>
-    <div class="left">
-      <div class="logo">T</div>
-      <div class="brand">Typo</div>
-    </div>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="tile" aria-hidden="true"><span>T</span></div>
 
-    <div class="toolbar">
-      <button class="btn" id="openBtn" type="button" title="Open a text file (Ctrl/Cmd+O)">
-        Open <span class="kbd" id="kbdOpen">Ctrl O</span>
-      </button>
+        <!-- Replaces the "Typo" section with a filename box (text input). Default: "Typo". -->
+        <div class="filename" title="Filename used for exported .txt files">
+          <label for="filename">File</label>
+          <input id="filename" type="text" value="Typo" autocomplete="off" spellcheck="false" />
+          <span class="ext">.txt</span>
+        </div>
+      </div>
 
-      <button class="btn primary" id="saveBtn" type="button" title="Save (Ctrl/Cmd+S)">
-        Save <span class="kbd" id="kbdSave">Ctrl S</span>
-      </button>
+      <div class="actions">
+        <button class="btn" id="openBtn" type="button" title="Open a .txt file (Ctrl/Cmd+O)">
+          Open <span class="kbd">Ctrl/⌘ O</span>
+        </button>
 
-      <button class="btn" id="exportBtn" type="button" title="Export a .txt download (Ctrl/Cmd+Shift+E)">
-        Export <span class="kbd" id="kbdExport">Ctrl Shift E</span>
-      </button>
+        <button class="btn" id="saveBtn" type="button" title="Save (Ctrl/Cmd+S)">
+          Save <span class="kbd">Ctrl/⌘ S</span>
+        </button>
 
-      <button class="btn" id="clearBtn" type="button" title="Clear the editor (Ctrl/Cmd+Shift+X)">
-        Clear <span class="kbd" id="kbdClear">Ctrl Shift X</span>
-      </button>
-    </div>
-  </header>
+        <button class="btn danger" id="clearBtn" type="button" title="Clear editor (Ctrl/Cmd+K)">
+          Clear <span class="kbd">Ctrl/⌘ K</span>
+        </button>
 
-  <main>
-    <div class="editorWrap">
-      <textarea id="editor" placeholder="Start writing..."></textarea>
-    </div>
-  </main>
+        <button class="btn primary" id="exportBtn" type="button" title="Export as .txt (Ctrl/Cmd+E)">
+          Export <span class="kbd">Ctrl/⌘ E</span>
+        </button>
 
-  <footer>
-    <div class="statusRow">
-      <div class="pill" id="statusPill">Saved locally</div>
-      <div class="pill" id="filePill" title="Current file" class="hidden"></div>
-    </div>
+        <button class="btn" id="wcToggle" type="button" title="Toggle word count (Ctrl/Cmd+W)">
+          Word count <span class="kbd">Ctrl/⌘ W</span>
+        </button>
 
-    <div class="rightMeta">
-      <label class="toggle" title="Toggle word count display">
-        <input id="wcToggle" type="checkbox" />
-        Word count
-      </label>
-      <div id="wcBox" class="pill">
-        <span class="wordcount" id="wcNum">0</span>
-        <span>words</span>
+        <input class="sr-only" id="fileInput" type="file" accept=".txt,text/plain" />
       </div>
     </div>
-  </footer>
 
-  <!-- Fallback file input for browsers without File System Access API -->
-  <input id="fileInput" type="file" accept=".txt,.md,.markdown,.log,.csv,.json,.yaml,.yml,text/plain" class="hidden" />
+    <div class="editorShell">
+      <div class="metaRow">
+        <div class="hint">Tip: your text autosaves locally in this browser.</div>
+        <div class="wc" id="wcPill">0 words • 0 chars</div>
+      </div>
+
+      <textarea id="editor" spellcheck="false" placeholder="Start typing…"></textarea>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
-    const editor = document.getElementById("editor");
-    const statusPill = document.getElementById("statusPill");
-    const filePill = document.getElementById("filePill");
-    const fileInput = document.getElementById("fileInput");
+    (function () {
+      const editor = document.getElementById('editor');
+      const fileInput = document.getElementById('fileInput');
+      const openBtn = document.getElementById('openBtn');
+      const saveBtn = document.getElementById('saveBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const exportBtn = document.getElementById('exportBtn');
+      const wcToggle = document.getElementById('wcToggle');
+      const wcPill = document.getElementById('wcPill');
+      const filenameInput = document.getElementById('filename');
+      const toastEl = document.getElementById('toast');
 
-    const openBtn = document.getElementById("openBtn");
-    const saveBtn = document.getElementById("saveBtn");
-    const exportBtn = document.getElementById("exportBtn");
-    const clearBtn = document.getElementById("clearBtn");
+      const LS_KEY_TEXT = 'typo:text:v1';
+      const LS_KEY_WC = 'typo:wordcount:show:v1';
+      const LS_KEY_FILENAME = 'typo:filename:v1';
 
-    const wcToggle = document.getElementById("wcToggle");
-    const wcBox = document.getElementById("wcBox");
-    const wcNum = document.getElementById("wcNum");
-
-    const STORAGE_KEY = "typo-content";
-    const STORAGE_WC = "typo-wordcount-enabled";
-    const STORAGE_FILENAME = "typo-last-filename";
-
-    let currentFileHandle = null; // File System Access API handle (if supported)
-    let currentFilename = localStorage.getItem(STORAGE_FILENAME) || "";
-
-    // --- Platform-specific hotkey labels (UI only) ---
-    const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
-    document.getElementById("kbdOpen").textContent = isMac ? "⌘ O" : "Ctrl O";
-    document.getElementById("kbdSave").textContent = isMac ? "⌘ S" : "Ctrl S";
-    document.getElementById("kbdExport").textContent = isMac ? "⌘ ⇧ E" : "Ctrl Shift E";
-    document.getElementById("kbdClear").textContent = isMac ? "⌘ ⇧ X" : "Ctrl Shift X";
-
-    // --- Load content ---
-    editor.value = localStorage.getItem(STORAGE_KEY) || "";
-
-    // --- Word count ---
-    function countWords(text) {
-      // Count sequences of non-whitespace characters
-      const trimmed = text.trim();
-      if (!trimmed) return 0;
-      return trimmed.split(/\s+/).length;
-    }
-    function updateWordCount() {
-      wcNum.textContent = String(countWords(editor.value));
-    }
-
-    const wcEnabled = (localStorage.getItem(STORAGE_WC) ?? "true") === "true";
-    wcToggle.checked = wcEnabled;
-    wcBox.classList.toggle("hidden", !wcEnabled);
-    updateWordCount();
-
-    wcToggle.addEventListener("change", () => {
-      localStorage.setItem(STORAGE_WC, wcToggle.checked ? "true" : "false");
-      wcBox.classList.toggle("hidden", !wcToggle.checked);
-    });
-
-    // --- Status / filename ---
-    function setStatus(msg) {
-      statusPill.textContent = msg;
-    }
-    function setFilename(name) {
-      currentFilename = name || "";
-      localStorage.setItem(STORAGE_FILENAME, currentFilename);
-      if (currentFilename) {
-        filePill.classList.remove("hidden");
-        filePill.textContent = currentFilename;
-      } else {
-        filePill.classList.add("hidden");
-        filePill.textContent = "";
+      // ---- Toast
+      let toastTimer = null;
+      function toast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1400);
       }
-    }
-    setFilename(currentFilename);
 
-    // --- Autosave locally ---
-    let saveTimer = null;
-    editor.addEventListener("input", () => {
-      updateWordCount();
-      // debounce local storage writes
-      window.clearTimeout(saveTimer);
-      saveTimer = window.setTimeout(() => {
-        localStorage.setItem(STORAGE_KEY, editor.value);
-        setStatus("Saved locally");
-      }, 150);
-    });
+      // ---- Filename sanitize
+      function safeBaseName(name) {
+        const raw = (name || '').trim() || 'Typo';
+        // Replace forbidden filename characters across common OSes.
+        const cleaned = raw.replace(/[<>:"/\\|?*\u0000-\u001F]/g, '-').replace(/\s+/g, ' ').trim();
+        // Avoid "." or ".."
+        if (cleaned === '.' || cleaned === '..') return 'Typo';
+        return cleaned.slice(0, 120) || 'Typo';
+      }
 
-    // --- Open file ---
-    async function openFile() {
-      try {
-        // Prefer File System Access API (Chromium-based browsers)
-        if (window.showOpenFilePicker) {
-          const [handle] = await window.showOpenFilePicker({
-            multiple: false,
-            types: [{
-              description: "Text files",
-              accept: {
-                "text/plain": [".txt", ".md", ".markdown", ".log", ".csv", ".json", ".yaml", ".yml"],
-              }
-            }]
-          });
+      // ---- Word count
+      function getCounts(text) {
+        const chars = text.length;
+        const words = (text.trim().match(/\S+/g) || []).length;
+        return { words, chars };
+      }
+      function updateCounts() {
+        const { words, chars } = getCounts(editor.value);
+        wcPill.textContent = `${words} words • ${chars} chars`;
+      }
 
-          const file = await handle.getFile();
+      // ---- Local autosave
+      function loadState() {
+        const savedText = localStorage.getItem(LS_KEY_TEXT);
+        if (savedText !== null) editor.value = savedText;
+
+        const savedWC = localStorage.getItem(LS_KEY_WC);
+        const showWC = savedWC === '1';
+        wcPill.classList.toggle('show', showWC);
+
+        const savedName = localStorage.getItem(LS_KEY_FILENAME);
+        if (savedName) filenameInput.value = savedName;
+
+        updateCounts();
+      }
+      function saveState() {
+        localStorage.setItem(LS_KEY_TEXT, editor.value);
+        updateCounts();
+      }
+
+      editor.addEventListener('input', saveState);
+
+      filenameInput.addEventListener('input', () => {
+        localStorage.setItem(LS_KEY_FILENAME, filenameInput.value);
+      });
+
+      // ---- Open
+      openBtn.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', async () => {
+        const file = fileInput.files && fileInput.files[0];
+        fileInput.value = '';
+        if (!file) return;
+
+        try {
           const text = await file.text();
-
-          currentFileHandle = handle;
           editor.value = text;
-          localStorage.setItem(STORAGE_KEY, editor.value);
+          saveState();
 
-          setFilename(file.name);
-          updateWordCount();
-          setStatus(`Opened "${file.name}"`);
-          editor.focus();
-          return;
+          // Set filename from opened file (without extension) if available
+          const base = (file.name || '').replace(/\.[^/.]+$/, '');
+          if (base) {
+            filenameInput.value = base;
+            localStorage.setItem(LS_KEY_FILENAME, filenameInput.value);
+          }
+
+          toast('Opened.');
+        } catch (e) {
+          toast('Could not open file.');
         }
+      });
 
-        // Fallback: hidden input
-        fileInput.value = "";
-        fileInput.click();
-      } catch (err) {
-        // user cancelled is common
-        setStatus("Open cancelled");
+      // ---- Export (download .txt)
+      function downloadTxt() {
+        const base = safeBaseName(filenameInput.value);
+        const blob = new Blob([editor.value], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = base + '.txt';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        toast('Exported .txt');
       }
-    }
 
-    fileInput.addEventListener("change", async () => {
-      const file = fileInput.files && fileInput.files[0];
-      if (!file) return;
-      const text = await file.text();
+      exportBtn.addEventListener('click', downloadTxt);
 
-      currentFileHandle = null; // no handle in fallback mode
-      editor.value = text;
-      localStorage.setItem(STORAGE_KEY, editor.value);
+      // ---- Save (File System Access API if available; fallback to export)
+      let fileHandle = null;
 
-      setFilename(file.name);
-      updateWordCount();
-      setStatus(`Opened "${file.name}"`);
-      editor.focus();
-    });
+      async function saveViaHandle() {
+        if (!('showSaveFilePicker' in window)) return false;
 
-    // --- Save file ---
-    async function saveFile() {
-      try {
-        // Keep local storage up to date
-        localStorage.setItem(STORAGE_KEY, editor.value);
-
-        // If we have a file handle and can write to it, save back to the same file.
-        if (currentFileHandle && currentFileHandle.createWritable) {
-          const writable = await currentFileHandle.createWritable();
-          await writable.write(editor.value);
+        try {
+          if (!fileHandle) {
+            const base = safeBaseName(filenameInput.value);
+            fileHandle = await window.showSaveFilePicker({
+              suggestedName: base + '.txt',
+              types: [{ description: 'Text Files', accept: { 'text/plain': ['.txt'] } }]
+            });
+          }
+          const writable = await fileHandle.createWritable();
+          await writable.write(new Blob([editor.value], { type: 'text/plain;charset=utf-8' }));
           await writable.close();
-          setStatus(`Saved "${currentFilename || "file"}"`);
+          toast('Saved.');
+          return true;
+        } catch (e) {
+          // User likely cancelled; do nothing noisy.
+          return false;
+        }
+      }
+
+      saveBtn.addEventListener('click', async () => {
+        const ok = await saveViaHandle();
+        if (!ok) downloadTxt();
+      });
+
+      // ---- Clear
+      clearBtn.addEventListener('click', () => {
+        editor.value = '';
+        saveState();
+        toast('Cleared.');
+      });
+
+      // ---- Word count toggle
+      wcToggle.addEventListener('click', () => {
+        const show = !wcPill.classList.contains('show');
+        wcPill.classList.toggle('show', show);
+        localStorage.setItem(LS_KEY_WC, show ? '1' : '0');
+        updateCounts();
+        toast(show ? 'Word count on.' : 'Word count off.');
+      });
+
+      // ---- Hotkeys
+      function isMac() {
+        return /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+      }
+
+      window.addEventListener('keydown', async (e) => {
+        const mod = isMac() ? e.metaKey : e.ctrlKey;
+        if (!mod) return;
+
+        const key = (e.key || '').toLowerCase();
+
+        // Ctrl/Cmd+O
+        if (key === 'o') {
+          e.preventDefault();
+          fileInput.click();
           return;
         }
 
-        // Otherwise, "Save" will behave like "Save As" (download).
-        const name = (currentFilename && currentFilename.trim()) ? currentFilename : "typo.txt";
-        downloadText(editor.value, name);
-        setStatus(`Saved as download ("${name}")`);
-      } catch (err) {
-        setStatus("Save failed");
-      }
-    }
+        // Ctrl/Cmd+S
+        if (key === 's') {
+          e.preventDefault();
+          const ok = await saveViaHandle();
+          if (!ok) downloadTxt();
+          return;
+        }
 
-    // --- Export (always downloads a new file) ---
-    function exportFile() {
-      const stamp = new Date();
-      const pad = (n) => String(n).padStart(2, "0");
-      const filename =
-        `typo-export-${stamp.getFullYear()}-${pad(stamp.getMonth()+1)}-${pad(stamp.getDate())}-${pad(stamp.getHours())}${pad(stamp.getMinutes())}.txt`;
-      downloadText(editor.value, filename);
-      setStatus(`Exported "${filename}"`);
-    }
+        // Ctrl/Cmd+E
+        if (key === 'e') {
+          e.preventDefault();
+          downloadTxt();
+          return;
+        }
 
-    function downloadText(text, filename) {
-      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
+        // Ctrl/Cmd+K (clear)
+        if (key === 'k') {
+          e.preventDefault();
+          editor.value = '';
+          saveState();
+          toast('Cleared.');
+          return;
+        }
 
-    // --- Clear ---
-    function clearText() {
-      if (!confirm("Clear all text in Typo?")) return;
-      editor.value = "";
-      localStorage.removeItem(STORAGE_KEY);
-      currentFileHandle = null;
-      setFilename("");
-      updateWordCount();
-      setStatus("Cleared");
+        // Ctrl/Cmd+W (toggle word count) — prevent browser tab close
+        if (key === 'w') {
+          e.preventDefault();
+          wcToggle.click();
+          return;
+        }
+      });
+
+      // Init
+      loadState();
       editor.focus();
-    }
-
-    // --- Button hooks ---
-    openBtn.addEventListener("click", openFile);
-    saveBtn.addEventListener("click", saveFile);
-    exportBtn.addEventListener("click", exportFile);
-    clearBtn.addEventListener("click", clearText);
-
-    // --- Hotkeys ---
-    document.addEventListener("keydown", (e) => {
-      const mod = e.metaKey || e.ctrlKey;
-
-      // Open: Ctrl/Cmd+O
-      if (mod && !e.shiftKey && !e.altKey && e.key.toLowerCase() === "o") {
-        e.preventDefault();
-        openFile();
-        return;
-      }
-
-      // Save: Ctrl/Cmd+S
-      if (mod && !e.shiftKey && !e.altKey && e.key.toLowerCase() === "s") {
-        e.preventDefault();
-        saveFile();
-        return;
-      }
-
-      // Export: Ctrl/Cmd+Shift+E
-      if (mod && e.shiftKey && !e.altKey && e.key.toLowerCase() === "e") {
-        e.preventDefault();
-        exportFile();
-        return;
-      }
-
-      // Clear: Ctrl/Cmd+Shift+X
-      if (mod && e.shiftKey && !e.altKey && e.key.toLowerCase() === "x") {
-        e.preventDefault();
-        clearText();
-        return;
-      }
-    });
-
-    // Initial UI state
-    setStatus(editor.value ? "Saved locally" : "Ready");
+    })();
   </script>
 </body>
 </html>
