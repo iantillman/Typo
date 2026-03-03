@@ -43,7 +43,6 @@
       display:flex;
     }
 
-    /* ONE WINDOW */
     .app{
       width:100%;
       display:flex;
@@ -52,12 +51,10 @@
       border:1px solid var(--border);
       border-radius:var(--radius);
       overflow:hidden;
-      /* minimal shadow */
       box-shadow:0 10px 28px rgba(11,42,74,.06);
       min-height:calc(100vh - 40px);
     }
 
-    /* Toolbar integrated into same window */
     .toolbar{
       display:flex;
       align-items:center;
@@ -65,20 +62,21 @@
       gap:10px;
       padding:12px 12px;
       border-bottom:1px solid var(--border2);
+      flex-wrap:wrap; /* allow wrapping on small screens */
     }
 
     .left{
       display:flex;
       align-items:center;
       gap:10px;
-      min-width:300px;
+      min-width:260px;
+      flex:1 1 320px;
     }
 
-    /* Square T icon (not pill) */
     .tile{
       width:36px;
       height:36px;
-      border-radius:10px; /* square-ish with soft corners */
+      border-radius:10px;
       background:#fff;
       border:1px solid rgba(37,99,235,.25);
       display:grid;
@@ -106,6 +104,7 @@
       font-family:var(--font);
     }
 
+    /* filename pill now shares the same row as buttons */
     .filename{
       display:flex;
       align-items:center;
@@ -114,6 +113,7 @@
       border:1px solid var(--border2);
       border-radius:999px;
       background:rgba(246,249,255,.55);
+      max-width:520px;
     }
     .filename label{
       font-size:12px;
@@ -121,12 +121,13 @@
       user-select:none;
     }
     .filename input{
-      width:170px;
+      width:180px;
       border:0;
       outline:0;
       background:transparent;
       font:600 14px/1.2 var(--font);
       color:var(--fg);
+      min-width:70px;
     }
     .filename .ext{
       font-size:12px;
@@ -140,9 +141,9 @@
       gap:8px;
       flex-wrap:wrap;
       justify-content:flex-end;
+      flex:1 1 420px;
     }
 
-    /* Minimal buttons */
     .btn{
       appearance:none;
       border:1px solid var(--border2);
@@ -155,7 +156,7 @@
       align-items:center;
       gap:8px;
       cursor:pointer;
-      transition:border-color .15s ease, box-shadow .15s ease, transform .05s ease;
+      transition:border-color .15s ease, transform .05s ease;
       box-shadow:none;
       white-space:nowrap;
     }
@@ -185,12 +186,6 @@
       background:rgba(255,255,255,.15);
     }
 
-    .rightMeta{
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-
     .wc{
       display:none;
       color:var(--muted);
@@ -204,7 +199,6 @@
     }
     .wc.show{display:inline-flex}
 
-    /* Editor fills the rest of the same window */
     .editorWrap{
       flex:1;
       padding:10px 12px 12px;
@@ -222,7 +216,6 @@
       font:400 15px/1.55 var(--font);
       color:var(--fg);
       background:#fff;
-      box-shadow:none;
     }
     textarea:focus{
       border-color:rgba(37,99,235,.45);
@@ -263,8 +256,15 @@
       border:0;
     }
 
+    /* Mobile tweaks: tighten widths + allow filename to sit nicely with buttons */
     @media (max-width: 760px){
-      .left{min-width:unset}
+      .left{flex:1 1 100%}
+      .actions{justify-content:flex-start; flex:1 1 100%}
+      .filename{max-width:100%}
+      .filename input{width:140px}
+    }
+    @media (max-width: 420px){
+      .btn .kbd{display:none}
       .filename input{width:120px}
     }
   </style>
@@ -274,16 +274,18 @@
   <div class="wrap">
     <div class="app">
       <div class="toolbar">
+        <!-- Left: icon + filename (same row as buttons; wraps on small screens) -->
         <div class="left">
           <div class="tile" aria-hidden="true"><span>T</span></div>
 
           <div class="filename" title="Filename used for exported .txt files">
-            <label for="filename">File</label>
+            <label for="filename">Filename</label>
             <input id="filename" type="text" value="Typo" autocomplete="off" spellcheck="false" />
             <span class="ext">.txt</span>
           </div>
         </div>
 
+        <!-- Right: actions -->
         <div class="actions">
           <button class="btn" id="openBtn" type="button" title="Open a .txt file (Ctrl/Cmd+O)">
             Open <span class="kbd">Ctrl/⌘ O</span>
@@ -312,7 +314,6 @@
       </div>
 
       <div class="editorWrap">
-        <!-- No placeholder: just a cursor -->
         <textarea id="editor" spellcheck="false"></textarea>
       </div>
     </div>
@@ -333,11 +334,11 @@
       const filenameInput = document.getElementById('filename');
       const toastEl = document.getElementById('toast');
 
-      const LS_KEY_TEXT = 'typo:text:v2';
-      const LS_KEY_WC = 'typo:wordcount:show:v2';
-      const LS_KEY_FILENAME = 'typo:filename:v2';
+      const LS_KEY_TEXT = 'typo:text:v3';
+      const LS_KEY_WC = 'typo:wordcount:show:v3';
+      const LS_KEY_FILENAME = 'typo:filename:v3';
 
-      // ---- Toast
+      // Toast
       let toastTimer = null;
       function toast(msg) {
         toastEl.textContent = msg;
@@ -346,7 +347,7 @@
         toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1200);
       }
 
-      // ---- Filename sanitize
+      // Filename sanitize
       function safeBaseName(name) {
         const raw = (name || '').trim() || 'Typo';
         const cleaned = raw
@@ -357,7 +358,7 @@
         return cleaned.slice(0, 120) || 'Typo';
       }
 
-      // ---- Word count
+      // Word count
       function getCounts(text) {
         const chars = text.length;
         const words = (text.trim().match(/\S+/g) || []).length;
@@ -368,7 +369,7 @@
         wcPill.textContent = `${words} words • ${chars} chars`;
       }
 
-      // ---- Local autosave
+      // Autosave
       function loadState() {
         const savedText = localStorage.getItem(LS_KEY_TEXT);
         if (savedText !== null) editor.value = savedText;
@@ -393,7 +394,7 @@
         localStorage.setItem(LS_KEY_FILENAME, filenameInput.value);
       });
 
-      // ---- Open
+      // Open
       openBtn.addEventListener('click', () => fileInput.click());
       fileInput.addEventListener('change', async () => {
         const file = fileInput.files && fileInput.files[0];
@@ -405,7 +406,6 @@
           editor.value = text;
           saveState();
 
-          // Set filename from opened file (without extension) if available
           const base = (file.name || '').replace(/\.[^/.]+$/, '');
           if (base) {
             filenameInput.value = base;
@@ -419,7 +419,7 @@
         }
       });
 
-      // ---- Export (download .txt)
+      // Export
       function downloadTxt() {
         const base = safeBaseName(filenameInput.value);
         const blob = new Blob([editor.value], { type: 'text/plain;charset=utf-8' });
@@ -433,10 +433,9 @@
         URL.revokeObjectURL(url);
         toast('Exported');
       }
-
       exportBtn.addEventListener('click', downloadTxt);
 
-      // ---- Save (File System Access API if available; fallback to export)
+      // Save (File System Access API if available; fallback to export)
       let fileHandle = null;
 
       async function saveViaHandle() {
@@ -456,7 +455,7 @@
           toast('Saved');
           return true;
         } catch (e) {
-          return false; // likely user cancelled
+          return false;
         }
       }
 
@@ -465,7 +464,7 @@
         if (!ok) downloadTxt();
       });
 
-      // ---- Clear
+      // Clear
       clearBtn.addEventListener('click', () => {
         editor.value = '';
         saveState();
@@ -473,7 +472,7 @@
         editor.focus();
       });
 
-      // ---- Word count toggle
+      // Word count toggle
       wcToggle.addEventListener('click', () => {
         const show = !wcPill.classList.contains('show');
         wcPill.classList.toggle('show', show);
@@ -481,7 +480,7 @@
         updateCounts();
       });
 
-      // ---- Hotkeys
+      // Hotkeys
       function isMac() {
         return /Mac|iPhone|iPad|iPod/.test(navigator.platform);
       }
@@ -492,51 +491,16 @@
 
         const key = (e.key || '').toLowerCase();
 
-        // Ctrl/Cmd+O
-        if (key === 'o') {
-          e.preventDefault();
-          fileInput.click();
-          return;
-        }
-
-        // Ctrl/Cmd+S
-        if (key === 's') {
-          e.preventDefault();
-          const ok = await saveViaHandle();
-          if (!ok) downloadTxt();
-          return;
-        }
-
-        // Ctrl/Cmd+E
-        if (key === 'e') {
-          e.preventDefault();
-          downloadTxt();
-          return;
-        }
-
-        // Ctrl/Cmd+K (clear)
-        if (key === 'k') {
-          e.preventDefault();
-          editor.value = '';
-          saveState();
-          toast('Cleared');
-          editor.focus();
-          return;
-        }
-
-        // Ctrl/Cmd+W (toggle word count) — prevent browser tab close
-        if (key === 'w') {
-          e.preventDefault();
-          wcToggle.click();
-          return;
-        }
+        if (key === 'o') { e.preventDefault(); fileInput.click(); return; }
+        if (key === 's') { e.preventDefault(); const ok = await saveViaHandle(); if (!ok) downloadTxt(); return; }
+        if (key === 'e') { e.preventDefault(); downloadTxt(); return; }
+        if (key === 'k') { e.preventDefault(); editor.value=''; saveState(); toast('Cleared'); editor.focus(); return; }
+        if (key === 'w') { e.preventDefault(); wcToggle.click(); return; }
       });
 
       // Init
       loadState();
-      // cursor visible immediately
       editor.focus();
-      // place caret at end of loaded text
       editor.setSelectionRange(editor.value.length, editor.value.length);
     })();
   </script>
