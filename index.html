@@ -13,14 +13,13 @@
 
   <style>
     :root{
-      --bg:#f8fbff;
+      --bg:#f6f9ff;
       --panel:#ffffff;
       --fg:#0b2a4a;
       --muted:#6e87a0;
       --primary:#2563eb;
-      --primary-500:#3b82f6;
       --border:rgba(11,42,74,.12);
-      --shadow:0 10px 30px rgba(11,42,74,.08);
+      --border2:rgba(11,42,74,.08);
       --ring:rgba(37,99,235,.22);
       --radius:18px;
       --radius-sm:12px;
@@ -32,79 +31,89 @@
     body{
       margin:0;
       font-family:var(--font);
-      background:linear-gradient(180deg, var(--bg), #ffffff);
       color:var(--fg);
+      background:linear-gradient(180deg, var(--bg), #fff);
     }
 
     .wrap{
       max-width:980px;
       margin:0 auto;
-      padding:18px 16px 26px;
+      padding:18px 16px 22px;
+      height:100%;
       display:flex;
-      flex-direction:column;
-      gap:14px;
-      min-height:100%;
     }
 
-    .topbar{
+    /* ONE WINDOW */
+    .app{
+      width:100%;
       display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      padding:14px 14px;
+      flex-direction:column;
       background:var(--panel);
       border:1px solid var(--border);
       border-radius:var(--radius);
-      box-shadow:var(--shadow);
+      overflow:hidden;
+      /* minimal shadow */
+      box-shadow:0 10px 28px rgba(11,42,74,.06);
+      min-height:calc(100vh - 40px);
     }
 
-    .brand{
+    /* Toolbar integrated into same window */
+    .toolbar{
       display:flex;
       align-items:center;
-      gap:12px;
-      min-width:280px;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px 12px;
+      border-bottom:1px solid var(--border2);
     }
 
+    .left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:300px;
+    }
+
+    /* Square T icon (not pill) */
     .tile{
-      width:42px;
-      height:42px;
-      border-radius:12px;
+      width:36px;
+      height:36px;
+      border-radius:10px; /* square-ish with soft corners */
       background:#fff;
       border:1px solid rgba(37,99,235,.25);
-      box-shadow:0 8px 18px rgba(37,99,235,.12);
       display:grid;
       place-items:center;
       position:relative;
       overflow:hidden;
+      flex:0 0 auto;
     }
     .tile:before{
       content:"";
       position:absolute;
       inset:-2px;
       background:
-        radial-gradient(circle at 8px 8px, rgba(37,99,235,.18) 0 2px, transparent 3px),
-        radial-gradient(circle at 22px 22px, rgba(37,99,235,.12) 0 2px, transparent 3px);
+        radial-gradient(circle at 7px 7px, rgba(37,99,235,.16) 0 2px, transparent 3px),
+        radial-gradient(circle at 20px 20px, rgba(37,99,235,.10) 0 2px, transparent 3px);
       pointer-events:none;
     }
     .tile span{
       position:relative;
       font-weight:800;
-      font-size:22px;
+      font-size:20px;
       letter-spacing:-0.02em;
       color:var(--primary);
       line-height:1;
       font-family:var(--font);
     }
 
-    /* Filename (replaces "Typo" label) */
     .filename{
       display:flex;
       align-items:center;
       gap:8px;
       padding:6px 10px;
-      border:1px solid var(--border);
+      border:1px solid var(--border2);
       border-radius:999px;
-      background:rgba(248,251,255,.6);
+      background:rgba(246,249,255,.55);
     }
     .filename label{
       font-size:12px;
@@ -128,45 +137,45 @@
     .actions{
       display:flex;
       align-items:center;
-      gap:10px;
+      gap:8px;
       flex-wrap:wrap;
       justify-content:flex-end;
     }
 
+    /* Minimal buttons */
     .btn{
       appearance:none;
-      border:1px solid var(--border);
+      border:1px solid var(--border2);
       background:#fff;
       color:var(--fg);
-      padding:10px 12px;
+      padding:9px 10px;
       border-radius:999px;
       font:600 13px/1 var(--font);
       display:inline-flex;
       align-items:center;
       gap:8px;
       cursor:pointer;
-      transition:transform .05s ease, box-shadow .2s ease, border-color .2s ease;
-      box-shadow:0 6px 14px rgba(11,42,74,.06);
+      transition:border-color .15s ease, box-shadow .15s ease, transform .05s ease;
+      box-shadow:none;
       white-space:nowrap;
     }
-    .btn:active{transform:translateY(1px)}
     .btn:hover{border-color:rgba(37,99,235,.35)}
+    .btn:active{transform:translateY(1px)}
     .btn.primary{
-      background:linear-gradient(180deg, var(--primary-500), var(--primary));
+      background:linear-gradient(180deg, #3b82f6, #2563eb);
       color:#fff;
       border-color:rgba(37,99,235,.45);
-      box-shadow:0 10px 22px rgba(37,99,235,.22);
     }
     .btn.danger{
-      border-color:rgba(220,38,38,.25);
+      border-color:rgba(220,38,38,.22);
     }
-    .btn.danger:hover{border-color:rgba(220,38,38,.45)}
+    .btn.danger:hover{border-color:rgba(220,38,38,.40)}
+
     .kbd{
       font:600 11px/1 var(--font);
       color:var(--muted);
       border:1px solid rgba(11,42,74,.12);
-      border-bottom-color:rgba(11,42,74,.18);
-      background:rgba(248,251,255,.9);
+      background:rgba(246,249,255,.8);
       padding:3px 7px;
       border-radius:8px;
     }
@@ -176,30 +185,10 @@
       background:rgba(255,255,255,.15);
     }
 
-    .editorShell{
-      flex:1;
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:14px;
+    .rightMeta{
       display:flex;
-      flex-direction:column;
-      gap:10px;
-      min-height:60vh;
-    }
-
-    .metaRow{
-      display:flex;
-      justify-content:space-between;
       align-items:center;
-      gap:10px;
-      padding:2px 2px 0;
-    }
-
-    .hint{
-      color:var(--muted);
-      font-size:12px;
+      gap:8px;
     }
 
     .wc{
@@ -207,30 +196,37 @@
       color:var(--muted);
       font-size:12px;
       font-variant-numeric:tabular-nums;
-      padding:6px 10px;
-      border:1px solid var(--border);
+      padding:7px 10px;
+      border:1px solid var(--border2);
       border-radius:999px;
-      background:rgba(248,251,255,.6);
+      background:rgba(246,249,255,.55);
+      white-space:nowrap;
     }
     .wc.show{display:inline-flex}
+
+    /* Editor fills the rest of the same window */
+    .editorWrap{
+      flex:1;
+      padding:10px 12px 12px;
+      display:flex;
+    }
 
     textarea{
       width:100%;
       flex:1;
       resize:none;
-      border:1px solid rgba(11,42,74,.10);
+      border:1px solid var(--border2);
       border-radius:var(--radius-sm);
       outline:0;
-      padding:14px 14px;
-      font:400 15px/1.5 var(--font);
+      padding:14px;
+      font:400 15px/1.55 var(--font);
       color:var(--fg);
-      background:linear-gradient(180deg, #fff, rgba(248,251,255,.35));
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
+      background:#fff;
+      box-shadow:none;
     }
     textarea:focus{
       border-color:rgba(37,99,235,.45);
-      box-shadow:0 0 0 4px var(--ring), inset 0 1px 0 rgba(255,255,255,.7);
-      background:#fff;
+      box-shadow:0 0 0 4px var(--ring);
     }
 
     .toast{
@@ -244,7 +240,7 @@
       padding:10px 12px;
       border-radius:999px;
       font:600 13px/1 var(--font);
-      box-shadow:0 16px 40px rgba(11,42,74,.22);
+      box-shadow:0 16px 40px rgba(11,42,74,.20);
       opacity:0;
       pointer-events:none;
       transition:opacity .18s ease, transform .18s ease;
@@ -266,55 +262,59 @@
       clip:rect(0,0,0,0);
       border:0;
     }
+
+    @media (max-width: 760px){
+      .left{min-width:unset}
+      .filename input{width:120px}
+    }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <div class="tile" aria-hidden="true"><span>T</span></div>
+    <div class="app">
+      <div class="toolbar">
+        <div class="left">
+          <div class="tile" aria-hidden="true"><span>T</span></div>
 
-        <!-- Replaces the "Typo" section with a filename box (text input). Default: "Typo". -->
-        <div class="filename" title="Filename used for exported .txt files">
-          <label for="filename">File</label>
-          <input id="filename" type="text" value="Typo" autocomplete="off" spellcheck="false" />
-          <span class="ext">.txt</span>
+          <div class="filename" title="Filename used for exported .txt files">
+            <label for="filename">File</label>
+            <input id="filename" type="text" value="Typo" autocomplete="off" spellcheck="false" />
+            <span class="ext">.txt</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="openBtn" type="button" title="Open a .txt file (Ctrl/Cmd+O)">
+            Open <span class="kbd">Ctrl/⌘ O</span>
+          </button>
+
+          <button class="btn" id="saveBtn" type="button" title="Save (Ctrl/Cmd+S)">
+            Save <span class="kbd">Ctrl/⌘ S</span>
+          </button>
+
+          <button class="btn danger" id="clearBtn" type="button" title="Clear editor (Ctrl/Cmd+K)">
+            Clear <span class="kbd">Ctrl/⌘ K</span>
+          </button>
+
+          <button class="btn primary" id="exportBtn" type="button" title="Export as .txt (Ctrl/Cmd+E)">
+            Export <span class="kbd">Ctrl/⌘ E</span>
+          </button>
+
+          <button class="btn" id="wcToggle" type="button" title="Toggle word count (Ctrl/Cmd+W)">
+            Word count <span class="kbd">Ctrl/⌘ W</span>
+          </button>
+
+          <div class="wc" id="wcPill">0 words • 0 chars</div>
+
+          <input class="sr-only" id="fileInput" type="file" accept=".txt,text/plain" />
         </div>
       </div>
 
-      <div class="actions">
-        <button class="btn" id="openBtn" type="button" title="Open a .txt file (Ctrl/Cmd+O)">
-          Open <span class="kbd">Ctrl/⌘ O</span>
-        </button>
-
-        <button class="btn" id="saveBtn" type="button" title="Save (Ctrl/Cmd+S)">
-          Save <span class="kbd">Ctrl/⌘ S</span>
-        </button>
-
-        <button class="btn danger" id="clearBtn" type="button" title="Clear editor (Ctrl/Cmd+K)">
-          Clear <span class="kbd">Ctrl/⌘ K</span>
-        </button>
-
-        <button class="btn primary" id="exportBtn" type="button" title="Export as .txt (Ctrl/Cmd+E)">
-          Export <span class="kbd">Ctrl/⌘ E</span>
-        </button>
-
-        <button class="btn" id="wcToggle" type="button" title="Toggle word count (Ctrl/Cmd+W)">
-          Word count <span class="kbd">Ctrl/⌘ W</span>
-        </button>
-
-        <input class="sr-only" id="fileInput" type="file" accept=".txt,text/plain" />
+      <div class="editorWrap">
+        <!-- No placeholder: just a cursor -->
+        <textarea id="editor" spellcheck="false"></textarea>
       </div>
-    </div>
-
-    <div class="editorShell">
-      <div class="metaRow">
-        <div class="hint">Tip: your text autosaves locally in this browser.</div>
-        <div class="wc" id="wcPill">0 words • 0 chars</div>
-      </div>
-
-      <textarea id="editor" spellcheck="false" placeholder="Start typing…"></textarea>
     </div>
   </div>
 
@@ -333,9 +333,9 @@
       const filenameInput = document.getElementById('filename');
       const toastEl = document.getElementById('toast');
 
-      const LS_KEY_TEXT = 'typo:text:v1';
-      const LS_KEY_WC = 'typo:wordcount:show:v1';
-      const LS_KEY_FILENAME = 'typo:filename:v1';
+      const LS_KEY_TEXT = 'typo:text:v2';
+      const LS_KEY_WC = 'typo:wordcount:show:v2';
+      const LS_KEY_FILENAME = 'typo:filename:v2';
 
       // ---- Toast
       let toastTimer = null;
@@ -343,15 +343,16 @@
         toastEl.textContent = msg;
         toastEl.classList.add('show');
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1400);
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1200);
       }
 
       // ---- Filename sanitize
       function safeBaseName(name) {
         const raw = (name || '').trim() || 'Typo';
-        // Replace forbidden filename characters across common OSes.
-        const cleaned = raw.replace(/[<>:"/\\|?*\u0000-\u001F]/g, '-').replace(/\s+/g, ' ').trim();
-        // Avoid "." or ".."
+        const cleaned = raw
+          .replace(/[<>:"/\\|?*\u0000-\u001F]/g, '-')
+          .replace(/\s+/g, ' ')
+          .trim();
         if (cleaned === '.' || cleaned === '..') return 'Typo';
         return cleaned.slice(0, 120) || 'Typo';
       }
@@ -411,9 +412,10 @@
             localStorage.setItem(LS_KEY_FILENAME, filenameInput.value);
           }
 
-          toast('Opened.');
+          toast('Opened');
+          editor.focus();
         } catch (e) {
-          toast('Could not open file.');
+          toast('Could not open');
         }
       });
 
@@ -429,7 +431,7 @@
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
-        toast('Exported .txt');
+        toast('Exported');
       }
 
       exportBtn.addEventListener('click', downloadTxt);
@@ -451,11 +453,10 @@
           const writable = await fileHandle.createWritable();
           await writable.write(new Blob([editor.value], { type: 'text/plain;charset=utf-8' }));
           await writable.close();
-          toast('Saved.');
+          toast('Saved');
           return true;
         } catch (e) {
-          // User likely cancelled; do nothing noisy.
-          return false;
+          return false; // likely user cancelled
         }
       }
 
@@ -468,7 +469,8 @@
       clearBtn.addEventListener('click', () => {
         editor.value = '';
         saveState();
-        toast('Cleared.');
+        toast('Cleared');
+        editor.focus();
       });
 
       // ---- Word count toggle
@@ -477,7 +479,6 @@
         wcPill.classList.toggle('show', show);
         localStorage.setItem(LS_KEY_WC, show ? '1' : '0');
         updateCounts();
-        toast(show ? 'Word count on.' : 'Word count off.');
       });
 
       // ---- Hotkeys
@@ -518,7 +519,8 @@
           e.preventDefault();
           editor.value = '';
           saveState();
-          toast('Cleared.');
+          toast('Cleared');
+          editor.focus();
           return;
         }
 
@@ -532,7 +534,10 @@
 
       // Init
       loadState();
+      // cursor visible immediately
       editor.focus();
+      // place caret at end of loaded text
+      editor.setSelectionRange(editor.value.length, editor.value.length);
     })();
   </script>
 </body>
