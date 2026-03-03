@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Typo — Minimal Text Editor</title>
-  <meta name="description" content="Typo is a simple, minimalist web-based text editor in a single HTML file." />
+  <title>Typo — Text Editor</title>
+  <meta name="description" content="Typo is a simple web-based text editor in a single HTML file." />
 
   <!-- Inter font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,145 +12,227 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --bg: #f8fbff;
-      --fg: #0b2a4a;
-      --muted: #6e87a0;
-      --primary: #2563eb;
-      --ring: rgba(37, 99, 235, 0.25);
-      --border: #e6eef7;
+    :root{
+      --bg:#f8fbff;
+      --fg:#0b2a4a;
+      --muted:#6e87a0;
+      --primary:#2563eb;
+      --ring:rgba(37,99,235,.25);
+      --border:#e6eef7;
+      --card:rgba(255,255,255,.7);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+      font-family:"Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--fg);
     }
 
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--fg);
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 18px;
+      background:#fff;
+      border-bottom:1px solid var(--border);
+      gap:12px;
+    }
+    .left{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:160px;
+    }
+    .logo{
+      width:40px;height:40px;
+      border:2px solid var(--primary);
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      font-size:20px;
+      line-height:1;
+      color:var(--primary);
+      user-select:none;
+      background:#fff;
+    }
+    .brand{
+      font-size:20px;
+      font-weight:700;
+      letter-spacing:-0.01em;
     }
 
-    header {
-      display: flex;
-      align-items: center;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      background: white;
+    .toolbar{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#fff;
+      cursor:pointer;
+      font-size:13px;
+      font-weight:600;
+      color:var(--fg);
+      user-select:none;
+    }
+    .btn.primary{
+      background:var(--primary);
+      border-color:transparent;
+      color:#fff;
+    }
+    .btn:hover{filter:brightness(0.98)}
+    .btn:active{transform:translateY(0.5px)}
+    .kbd{
+      font-size:11px;
+      font-weight:700;
+      padding:2px 6px;
+      border-radius:8px;
+      border:1px solid var(--border);
+      color:var(--muted);
+      background:rgba(248,251,255,0.8);
+    }
+    .btn.primary .kbd{
+      border-color:rgba(255,255,255,0.35);
+      color:rgba(255,255,255,0.95);
+      background:rgba(255,255,255,0.12);
     }
 
-    /* Logo uses Inter explicitly */
-    .logo {
-      width: 40px;
-      height: 40px;
-      background: white;
-      border: 2px solid var(--primary);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 12px;
-
-      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      font-weight: 700;
-      font-size: 20px;
-      line-height: 1;
-      color: var(--primary);
-      user-select: none;
+    main{
+      flex:1;
+      padding:18px;
+      display:flex;
+      min-height:0;
     }
-
-    .brand {
-      font-size: 20px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
+    .editorWrap{
+      flex:1;
+      display:flex;
+      border-radius:14px;
+      padding:14px;
+      background:var(--card);
+      border:1px solid var(--border);
+      box-shadow:0 1px 0 rgba(11,42,74,0.04);
+      min-height:0;
     }
-
-    .subtitle {
-      font-size: 13px;
-      color: var(--muted);
-      margin-left: 8px;
-      font-weight: 400;
+    .editorWrap:focus-within{
+      background:#fff;
+      border-color:rgba(37,99,235,0.35);
+      box-shadow:0 0 0 4px var(--ring);
     }
-
-    main {
-      flex: 1;
-      display: flex;
-      padding: 20px;
+    textarea{
+      width:100%;
+      height:100%;
+      border:none;
+      outline:none;
+      resize:none;
+      background:transparent;
+      color:var(--fg);
+      font-family:"Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size:16px;
+      line-height:1.65;
+      min-height:0;
     }
+    textarea::placeholder{color:var(--muted);opacity:.9}
 
-    /* Editor uses Inter too */
-    textarea {
-      width: 100%;
-      height: 100%;
-      border: none;
-      resize: none;
-      outline: none;
-
-      font-size: 16px;
-      line-height: 1.65;
-      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-
-      background: transparent;
-      color: var(--fg);
+    footer{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 18px;
+      background:#fff;
+      border-top:1px solid var(--border);
+      font-size:12px;
+      color:var(--muted);
     }
-
-    textarea::placeholder {
-      color: var(--muted);
-      opacity: 0.9;
+    .statusRow{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:160px;
     }
-
-    footer {
-      padding: 10px 20px;
-      font-size: 12px;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
-      background: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:4px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:rgba(248,251,255,0.8);
+      color:var(--muted);
+      font-weight:600;
+      max-width:55vw;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
     }
-
-    button {
-      background: var(--primary);
-      border: none;
-      color: white;
-      padding: 7px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 12px;
-      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      font-weight: 600;
+    .rightMeta{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      justify-content:flex-end;
+      flex:1;
     }
-
-    button:hover { opacity: 0.92; }
-    button:active { transform: translateY(0.5px); }
-
-    /* Small “nice” improvement: focus ring when you click into the editor */
-    .editorWrap {
-      flex: 1;
-      border-radius: 12px;
-      padding: 14px;
-      background: rgba(255,255,255,0.7);
-      border: 1px solid var(--border);
-      box-shadow: 0 1px 0 rgba(11, 42, 74, 0.04);
-      display: flex;
+    .toggle{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+      padding:6px 10px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--fg);
+      font-weight:600;
+      font-size:13px;
     }
-
-    .editorWrap:focus-within {
-      border-color: rgba(37, 99, 235, 0.35);
-      box-shadow: 0 0 0 4px var(--ring);
-      background: white;
+    .toggle input{accent-color:var(--primary)}
+    .wordcount{
+      font-variant-numeric:tabular-nums;
+      font-weight:700;
+      color:var(--fg);
     }
+    .hidden{display:none !important;}
   </style>
 </head>
 
 <body>
   <header>
-    <div class="logo">T</div>
-    <div class="brand">Typo</div>
-    <div class="subtitle">Minimal Text Editor</div>
+    <div class="left">
+      <div class="logo">T</div>
+      <div class="brand">Typo</div>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn" id="openBtn" type="button" title="Open a text file (Ctrl/Cmd+O)">
+        Open <span class="kbd" id="kbdOpen">Ctrl O</span>
+      </button>
+
+      <button class="btn primary" id="saveBtn" type="button" title="Save (Ctrl/Cmd+S)">
+        Save <span class="kbd" id="kbdSave">Ctrl S</span>
+      </button>
+
+      <button class="btn" id="exportBtn" type="button" title="Export a .txt download (Ctrl/Cmd+Shift+E)">
+        Export <span class="kbd" id="kbdExport">Ctrl Shift E</span>
+      </button>
+
+      <button class="btn" id="clearBtn" type="button" title="Clear the editor (Ctrl/Cmd+Shift+X)">
+        Clear <span class="kbd" id="kbdClear">Ctrl Shift X</span>
+      </button>
+    </div>
   </header>
 
   <main>
@@ -160,31 +242,260 @@
   </main>
 
   <footer>
-    <div id="status">Saved locally</div>
-    <button type="button" onclick="clearText()">Clear</button>
+    <div class="statusRow">
+      <div class="pill" id="statusPill">Saved locally</div>
+      <div class="pill" id="filePill" title="Current file" class="hidden"></div>
+    </div>
+
+    <div class="rightMeta">
+      <label class="toggle" title="Toggle word count display">
+        <input id="wcToggle" type="checkbox" />
+        Word count
+      </label>
+      <div id="wcBox" class="pill">
+        <span class="wordcount" id="wcNum">0</span>
+        <span>words</span>
+      </div>
+    </div>
   </footer>
+
+  <!-- Fallback file input for browsers without File System Access API -->
+  <input id="fileInput" type="file" accept=".txt,.md,.markdown,.log,.csv,.json,.yaml,.yml,text/plain" class="hidden" />
 
   <script>
     const editor = document.getElementById("editor");
-    const status = document.getElementById("status");
-    const STORAGE_KEY = "typo-content";
+    const statusPill = document.getElementById("statusPill");
+    const filePill = document.getElementById("filePill");
+    const fileInput = document.getElementById("fileInput");
 
-    // Load saved content
+    const openBtn = document.getElementById("openBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const exportBtn = document.getElementById("exportBtn");
+    const clearBtn = document.getElementById("clearBtn");
+
+    const wcToggle = document.getElementById("wcToggle");
+    const wcBox = document.getElementById("wcBox");
+    const wcNum = document.getElementById("wcNum");
+
+    const STORAGE_KEY = "typo-content";
+    const STORAGE_WC = "typo-wordcount-enabled";
+    const STORAGE_FILENAME = "typo-last-filename";
+
+    let currentFileHandle = null; // File System Access API handle (if supported)
+    let currentFilename = localStorage.getItem(STORAGE_FILENAME) || "";
+
+    // --- Platform-specific hotkey labels (UI only) ---
+    const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+    document.getElementById("kbdOpen").textContent = isMac ? "⌘ O" : "Ctrl O";
+    document.getElementById("kbdSave").textContent = isMac ? "⌘ S" : "Ctrl S";
+    document.getElementById("kbdExport").textContent = isMac ? "⌘ ⇧ E" : "Ctrl Shift E";
+    document.getElementById("kbdClear").textContent = isMac ? "⌘ ⇧ X" : "Ctrl Shift X";
+
+    // --- Load content ---
     editor.value = localStorage.getItem(STORAGE_KEY) || "";
 
-    // Auto-save
-    editor.addEventListener("input", () => {
-      localStorage.setItem(STORAGE_KEY, editor.value);
-      status.textContent = "Saved locally";
+    // --- Word count ---
+    function countWords(text) {
+      // Count sequences of non-whitespace characters
+      const trimmed = text.trim();
+      if (!trimmed) return 0;
+      return trimmed.split(/\s+/).length;
+    }
+    function updateWordCount() {
+      wcNum.textContent = String(countWords(editor.value));
+    }
+
+    const wcEnabled = (localStorage.getItem(STORAGE_WC) ?? "true") === "true";
+    wcToggle.checked = wcEnabled;
+    wcBox.classList.toggle("hidden", !wcEnabled);
+    updateWordCount();
+
+    wcToggle.addEventListener("change", () => {
+      localStorage.setItem(STORAGE_WC, wcToggle.checked ? "true" : "false");
+      wcBox.classList.toggle("hidden", !wcToggle.checked);
     });
 
-    function clearText() {
-      if (confirm("Clear all text in Typo?")) {
-        editor.value = "";
-        localStorage.removeItem(STORAGE_KEY);
-        status.textContent = "Cleared";
+    // --- Status / filename ---
+    function setStatus(msg) {
+      statusPill.textContent = msg;
+    }
+    function setFilename(name) {
+      currentFilename = name || "";
+      localStorage.setItem(STORAGE_FILENAME, currentFilename);
+      if (currentFilename) {
+        filePill.classList.remove("hidden");
+        filePill.textContent = currentFilename;
+      } else {
+        filePill.classList.add("hidden");
+        filePill.textContent = "";
       }
     }
+    setFilename(currentFilename);
+
+    // --- Autosave locally ---
+    let saveTimer = null;
+    editor.addEventListener("input", () => {
+      updateWordCount();
+      // debounce local storage writes
+      window.clearTimeout(saveTimer);
+      saveTimer = window.setTimeout(() => {
+        localStorage.setItem(STORAGE_KEY, editor.value);
+        setStatus("Saved locally");
+      }, 150);
+    });
+
+    // --- Open file ---
+    async function openFile() {
+      try {
+        // Prefer File System Access API (Chromium-based browsers)
+        if (window.showOpenFilePicker) {
+          const [handle] = await window.showOpenFilePicker({
+            multiple: false,
+            types: [{
+              description: "Text files",
+              accept: {
+                "text/plain": [".txt", ".md", ".markdown", ".log", ".csv", ".json", ".yaml", ".yml"],
+              }
+            }]
+          });
+
+          const file = await handle.getFile();
+          const text = await file.text();
+
+          currentFileHandle = handle;
+          editor.value = text;
+          localStorage.setItem(STORAGE_KEY, editor.value);
+
+          setFilename(file.name);
+          updateWordCount();
+          setStatus(`Opened "${file.name}"`);
+          editor.focus();
+          return;
+        }
+
+        // Fallback: hidden input
+        fileInput.value = "";
+        fileInput.click();
+      } catch (err) {
+        // user cancelled is common
+        setStatus("Open cancelled");
+      }
+    }
+
+    fileInput.addEventListener("change", async () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      const text = await file.text();
+
+      currentFileHandle = null; // no handle in fallback mode
+      editor.value = text;
+      localStorage.setItem(STORAGE_KEY, editor.value);
+
+      setFilename(file.name);
+      updateWordCount();
+      setStatus(`Opened "${file.name}"`);
+      editor.focus();
+    });
+
+    // --- Save file ---
+    async function saveFile() {
+      try {
+        // Keep local storage up to date
+        localStorage.setItem(STORAGE_KEY, editor.value);
+
+        // If we have a file handle and can write to it, save back to the same file.
+        if (currentFileHandle && currentFileHandle.createWritable) {
+          const writable = await currentFileHandle.createWritable();
+          await writable.write(editor.value);
+          await writable.close();
+          setStatus(`Saved "${currentFilename || "file"}"`);
+          return;
+        }
+
+        // Otherwise, "Save" will behave like "Save As" (download).
+        const name = (currentFilename && currentFilename.trim()) ? currentFilename : "typo.txt";
+        downloadText(editor.value, name);
+        setStatus(`Saved as download ("${name}")`);
+      } catch (err) {
+        setStatus("Save failed");
+      }
+    }
+
+    // --- Export (always downloads a new file) ---
+    function exportFile() {
+      const stamp = new Date();
+      const pad = (n) => String(n).padStart(2, "0");
+      const filename =
+        `typo-export-${stamp.getFullYear()}-${pad(stamp.getMonth()+1)}-${pad(stamp.getDate())}-${pad(stamp.getHours())}${pad(stamp.getMinutes())}.txt`;
+      downloadText(editor.value, filename);
+      setStatus(`Exported "${filename}"`);
+    }
+
+    function downloadText(text, filename) {
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // --- Clear ---
+    function clearText() {
+      if (!confirm("Clear all text in Typo?")) return;
+      editor.value = "";
+      localStorage.removeItem(STORAGE_KEY);
+      currentFileHandle = null;
+      setFilename("");
+      updateWordCount();
+      setStatus("Cleared");
+      editor.focus();
+    }
+
+    // --- Button hooks ---
+    openBtn.addEventListener("click", openFile);
+    saveBtn.addEventListener("click", saveFile);
+    exportBtn.addEventListener("click", exportFile);
+    clearBtn.addEventListener("click", clearText);
+
+    // --- Hotkeys ---
+    document.addEventListener("keydown", (e) => {
+      const mod = e.metaKey || e.ctrlKey;
+
+      // Open: Ctrl/Cmd+O
+      if (mod && !e.shiftKey && !e.altKey && e.key.toLowerCase() === "o") {
+        e.preventDefault();
+        openFile();
+        return;
+      }
+
+      // Save: Ctrl/Cmd+S
+      if (mod && !e.shiftKey && !e.altKey && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        saveFile();
+        return;
+      }
+
+      // Export: Ctrl/Cmd+Shift+E
+      if (mod && e.shiftKey && !e.altKey && e.key.toLowerCase() === "e") {
+        e.preventDefault();
+        exportFile();
+        return;
+      }
+
+      // Clear: Ctrl/Cmd+Shift+X
+      if (mod && e.shiftKey && !e.altKey && e.key.toLowerCase() === "x") {
+        e.preventDefault();
+        clearText();
+        return;
+      }
+    });
+
+    // Initial UI state
+    setStatus(editor.value ? "Saved locally" : "Ready");
   </script>
 </body>
 </html>
