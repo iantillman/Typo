@@ -55,22 +55,14 @@
       min-height:calc(100vh - 40px);
     }
 
+    /* Single clean toolbar row */
     .toolbar{
       display:flex;
       align-items:center;
-      justify-content:space-between;
       gap:10px;
-      padding:12px 12px;
+      padding:12px;
       border-bottom:1px solid var(--border2);
-      flex-wrap:wrap; /* allow wrapping on small screens */
-    }
-
-    .left{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:260px;
-      flex:1 1 320px;
+      flex-wrap:wrap; /* wraps nicely on phones */
     }
 
     .tile{
@@ -101,19 +93,18 @@
       letter-spacing:-0.02em;
       color:var(--primary);
       line-height:1;
-      font-family:var(--font);
     }
 
-    /* filename pill now shares the same row as buttons */
+    /* Filename now behaves like another menu item */
     .filename{
       display:flex;
       align-items:center;
       gap:8px;
-      padding:6px 10px;
+      padding:9px 12px;
       border:1px solid var(--border2);
       border-radius:999px;
-      background:rgba(246,249,255,.55);
-      max-width:520px;
+      background:#fff;
+      font:600 13px/1 var(--font);
     }
     .filename label{
       font-size:12px;
@@ -121,13 +112,13 @@
       user-select:none;
     }
     .filename input{
-      width:180px;
+      width:140px;
       border:0;
       outline:0;
       background:transparent;
-      font:600 14px/1.2 var(--font);
+      font:600 13px/1 var(--font);
       color:var(--fg);
-      min-width:70px;
+      min-width:60px;
     }
     .filename .ext{
       font-size:12px;
@@ -135,42 +126,40 @@
       user-select:none;
     }
 
-    .actions{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-      flex:1 1 420px;
-    }
-
     .btn{
       appearance:none;
       border:1px solid var(--border2);
       background:#fff;
       color:var(--fg);
-      padding:9px 10px;
+      padding:9px 12px;
       border-radius:999px;
       font:600 13px/1 var(--font);
       display:inline-flex;
       align-items:center;
       gap:8px;
       cursor:pointer;
-      transition:border-color .15s ease, transform .05s ease;
-      box-shadow:none;
+      transition:border-color .15s ease, transform .05s ease, color .15s ease;
       white-space:nowrap;
     }
     .btn:hover{border-color:rgba(37,99,235,.35)}
     .btn:active{transform:translateY(1px)}
-    .btn.primary{
-      background:linear-gradient(180deg, #3b82f6, #2563eb);
-      color:#fff;
-      border-color:rgba(37,99,235,.45);
-    }
+
     .btn.danger{
-      border-color:rgba(220,38,38,.22);
+      border-color:rgba(220,38,38,.25);
     }
-    .btn.danger:hover{border-color:rgba(220,38,38,.40)}
+    .btn.danger:hover{
+      border-color:rgba(220,38,38,.45);
+    }
+
+    /* Export: no fill, subtle blue border */
+    .btn.export{
+      border-color:rgba(37,99,235,.45);
+      color:var(--primary);
+    }
+    .btn.export:hover{
+      border-color:var(--primary);
+      background:rgba(37,99,235,.05);
+    }
 
     .kbd{
       font:600 11px/1 var(--font);
@@ -179,11 +168,6 @@
       background:rgba(246,249,255,.8);
       padding:3px 7px;
       border-radius:8px;
-    }
-    .btn.primary .kbd{
-      color:rgba(255,255,255,.9);
-      border-color:rgba(255,255,255,.25);
-      background:rgba(255,255,255,.15);
     }
 
     .wc{
@@ -194,7 +178,7 @@
       padding:7px 10px;
       border:1px solid var(--border2);
       border-radius:999px;
-      background:rgba(246,249,255,.55);
+      background:#fff;
       white-space:nowrap;
     }
     .wc.show{display:inline-flex}
@@ -229,16 +213,12 @@
       transform:translateX(-50%);
       background:rgba(11,42,74,.92);
       color:#fff;
-      border:1px solid rgba(255,255,255,.14);
       padding:10px 12px;
       border-radius:999px;
       font:600 13px/1 var(--font);
-      box-shadow:0 16px 40px rgba(11,42,74,.20);
       opacity:0;
       pointer-events:none;
       transition:opacity .18s ease, transform .18s ease;
-      max-width:min(680px, calc(100vw - 28px));
-      text-align:center;
     }
     .toast.show{
       opacity:1;
@@ -256,16 +236,10 @@
       border:0;
     }
 
-    /* Mobile tweaks: tighten widths + allow filename to sit nicely with buttons */
-    @media (max-width: 760px){
-      .left{flex:1 1 100%}
-      .actions{justify-content:flex-start; flex:1 1 100%}
-      .filename{max-width:100%}
-      .filename input{width:140px}
-    }
-    @media (max-width: 420px){
-      .btn .kbd{display:none}
-      .filename input{width:120px}
+    /* Mobile behavior */
+    @media (max-width:600px){
+      .kbd{display:none}
+      .filename input{width:110px}
     }
   </style>
 </head>
@@ -274,43 +248,38 @@
   <div class="wrap">
     <div class="app">
       <div class="toolbar">
-        <!-- Left: icon + filename (same row as buttons; wraps on small screens) -->
-        <div class="left">
-          <div class="tile" aria-hidden="true"><span>T</span></div>
 
-          <div class="filename" title="Filename used for exported .txt files">
-            <label for="filename">Filename</label>
-            <input id="filename" type="text" value="Typo" autocomplete="off" spellcheck="false" />
-            <span class="ext">.txt</span>
-          </div>
+        <div class="tile"><span>T</span></div>
+
+        <div class="filename">
+          <label for="filename">Filename</label>
+          <input id="filename" type="text" value="Typo" autocomplete="off" spellcheck="false" />
+          <span class="ext">.txt</span>
         </div>
 
-        <!-- Right: actions -->
-        <div class="actions">
-          <button class="btn" id="openBtn" type="button" title="Open a .txt file (Ctrl/Cmd+O)">
-            Open <span class="kbd">Ctrl/⌘ O</span>
-          </button>
+        <button class="btn" id="openBtn">
+          Open <span class="kbd">Ctrl/⌘ O</span>
+        </button>
 
-          <button class="btn" id="saveBtn" type="button" title="Save (Ctrl/Cmd+S)">
-            Save <span class="kbd">Ctrl/⌘ S</span>
-          </button>
+        <button class="btn" id="saveBtn">
+          Save <span class="kbd">Ctrl/⌘ S</span>
+        </button>
 
-          <button class="btn danger" id="clearBtn" type="button" title="Clear editor (Ctrl/Cmd+K)">
-            Clear <span class="kbd">Ctrl/⌘ K</span>
-          </button>
+        <button class="btn danger" id="clearBtn">
+          Clear <span class="kbd">Ctrl/⌘ K</span>
+        </button>
 
-          <button class="btn primary" id="exportBtn" type="button" title="Export as .txt (Ctrl/Cmd+E)">
-            Export <span class="kbd">Ctrl/⌘ E</span>
-          </button>
+        <button class="btn export" id="exportBtn">
+          Export <span class="kbd">Ctrl/⌘ E</span>
+        </button>
 
-          <button class="btn" id="wcToggle" type="button" title="Toggle word count (Ctrl/Cmd+W)">
-            Word count <span class="kbd">Ctrl/⌘ W</span>
-          </button>
+        <button class="btn" id="wcToggle">
+          Word count <span class="kbd">Ctrl/⌘ W</span>
+        </button>
 
-          <div class="wc" id="wcPill">0 words • 0 chars</div>
+        <div class="wc" id="wcPill">0 words • 0 chars</div>
 
-          <input class="sr-only" id="fileInput" type="file" accept=".txt,text/plain" />
-        </div>
+        <input class="sr-only" id="fileInput" type="file" accept=".txt,text/plain" />
       </div>
 
       <div class="editorWrap">
@@ -319,7 +288,7 @@
     </div>
   </div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="toast" id="toast"></div>
 
   <script>
     (function () {
@@ -334,174 +303,111 @@
       const filenameInput = document.getElementById('filename');
       const toastEl = document.getElementById('toast');
 
-      const LS_KEY_TEXT = 'typo:text:v3';
-      const LS_KEY_WC = 'typo:wordcount:show:v3';
-      const LS_KEY_FILENAME = 'typo:filename:v3';
+      const LS_KEY_TEXT = 'typo:text:v4';
+      const LS_KEY_WC = 'typo:wordcount:show:v4';
+      const LS_KEY_FILENAME = 'typo:filename:v4';
 
-      // Toast
-      let toastTimer = null;
-      function toast(msg) {
-        toastEl.textContent = msg;
+      let toastTimer=null;
+      function toast(msg){
+        toastEl.textContent=msg;
         toastEl.classList.add('show');
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1200);
+        toastTimer=setTimeout(()=>toastEl.classList.remove('show'),1200);
       }
 
-      // Filename sanitize
-      function safeBaseName(name) {
-        const raw = (name || '').trim() || 'Typo';
-        const cleaned = raw
-          .replace(/[<>:"/\\|?*\u0000-\u001F]/g, '-')
-          .replace(/\s+/g, ' ')
-          .trim();
-        if (cleaned === '.' || cleaned === '..') return 'Typo';
-        return cleaned.slice(0, 120) || 'Typo';
+      function safeBaseName(name){
+        const raw=(name||'').trim()||'Typo';
+        return raw.replace(/[<>:"/\\|?*\u0000-\u001F]/g,'-').trim()||'Typo';
       }
 
-      // Word count
-      function getCounts(text) {
-        const chars = text.length;
-        const words = (text.trim().match(/\S+/g) || []).length;
-        return { words, chars };
+      function getCounts(text){
+        const chars=text.length;
+        const words=(text.trim().match(/\S+/g)||[]).length;
+        return {words,chars};
       }
-      function updateCounts() {
-        const { words, chars } = getCounts(editor.value);
-        wcPill.textContent = `${words} words • ${chars} chars`;
+      function updateCounts(){
+        const {words,chars}=getCounts(editor.value);
+        wcPill.textContent=`${words} words • ${chars} chars`;
       }
 
-      // Autosave
-      function loadState() {
-        const savedText = localStorage.getItem(LS_KEY_TEXT);
-        if (savedText !== null) editor.value = savedText;
+      function loadState(){
+        const savedText=localStorage.getItem(LS_KEY_TEXT);
+        if(savedText!==null) editor.value=savedText;
 
-        const savedWC = localStorage.getItem(LS_KEY_WC);
-        const showWC = savedWC === '1';
-        wcPill.classList.toggle('show', showWC);
+        const savedWC=localStorage.getItem(LS_KEY_WC);
+        wcPill.classList.toggle('show', savedWC==='1');
 
-        const savedName = localStorage.getItem(LS_KEY_FILENAME);
-        if (savedName) filenameInput.value = savedName;
+        const savedName=localStorage.getItem(LS_KEY_FILENAME);
+        if(savedName) filenameInput.value=savedName;
 
         updateCounts();
       }
-      function saveState() {
-        localStorage.setItem(LS_KEY_TEXT, editor.value);
+      function saveState(){
+        localStorage.setItem(LS_KEY_TEXT,editor.value);
         updateCounts();
       }
 
-      editor.addEventListener('input', saveState);
+      editor.addEventListener('input',saveState);
+      filenameInput.addEventListener('input',()=>localStorage.setItem(LS_KEY_FILENAME,filenameInput.value));
 
-      filenameInput.addEventListener('input', () => {
-        localStorage.setItem(LS_KEY_FILENAME, filenameInput.value);
-      });
+      openBtn.onclick=()=>fileInput.click();
+      fileInput.onchange=async()=>{
+        const file=fileInput.files[0];
+        fileInput.value='';
+        if(!file) return;
+        const text=await file.text();
+        editor.value=text;
+        saveState();
+        filenameInput.value=file.name.replace(/\.[^/.]+$/,'');
+        toast('Opened');
+      };
 
-      // Open
-      openBtn.addEventListener('click', () => fileInput.click());
-      fileInput.addEventListener('change', async () => {
-        const file = fileInput.files && fileInput.files[0];
-        fileInput.value = '';
-        if (!file) return;
-
-        try {
-          const text = await file.text();
-          editor.value = text;
-          saveState();
-
-          const base = (file.name || '').replace(/\.[^/.]+$/, '');
-          if (base) {
-            filenameInput.value = base;
-            localStorage.setItem(LS_KEY_FILENAME, filenameInput.value);
-          }
-
-          toast('Opened');
-          editor.focus();
-        } catch (e) {
-          toast('Could not open');
-        }
-      });
-
-      // Export
-      function downloadTxt() {
-        const base = safeBaseName(filenameInput.value);
-        const blob = new Blob([editor.value], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = base + '.txt';
+      function downloadTxt(){
+        const base=safeBaseName(filenameInput.value);
+        const blob=new Blob([editor.value],{type:'text/plain;charset=utf-8'});
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=url;
+        a.download=base+'.txt';
         document.body.appendChild(a);
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
         toast('Exported');
       }
-      exportBtn.addEventListener('click', downloadTxt);
+      exportBtn.onclick=downloadTxt;
 
-      // Save (File System Access API if available; fallback to export)
-      let fileHandle = null;
+      saveBtn.onclick=downloadTxt;
 
-      async function saveViaHandle() {
-        if (!('showSaveFilePicker' in window)) return false;
-
-        try {
-          if (!fileHandle) {
-            const base = safeBaseName(filenameInput.value);
-            fileHandle = await window.showSaveFilePicker({
-              suggestedName: base + '.txt',
-              types: [{ description: 'Text Files', accept: { 'text/plain': ['.txt'] } }]
-            });
-          }
-          const writable = await fileHandle.createWritable();
-          await writable.write(new Blob([editor.value], { type: 'text/plain;charset=utf-8' }));
-          await writable.close();
-          toast('Saved');
-          return true;
-        } catch (e) {
-          return false;
-        }
-      }
-
-      saveBtn.addEventListener('click', async () => {
-        const ok = await saveViaHandle();
-        if (!ok) downloadTxt();
-      });
-
-      // Clear
-      clearBtn.addEventListener('click', () => {
-        editor.value = '';
+      clearBtn.onclick=()=>{
+        editor.value='';
         saveState();
         toast('Cleared');
-        editor.focus();
-      });
+      };
 
-      // Word count toggle
-      wcToggle.addEventListener('click', () => {
-        const show = !wcPill.classList.contains('show');
-        wcPill.classList.toggle('show', show);
-        localStorage.setItem(LS_KEY_WC, show ? '1' : '0');
-        updateCounts();
-      });
+      wcToggle.onclick=()=>{
+        const show=!wcPill.classList.contains('show');
+        wcPill.classList.toggle('show',show);
+        localStorage.setItem(LS_KEY_WC,show?'1':'0');
+      };
 
-      // Hotkeys
-      function isMac() {
+      function isMac(){
         return /Mac|iPhone|iPad|iPod/.test(navigator.platform);
       }
 
-      window.addEventListener('keydown', async (e) => {
-        const mod = isMac() ? e.metaKey : e.ctrlKey;
-        if (!mod) return;
-
-        const key = (e.key || '').toLowerCase();
-
-        if (key === 'o') { e.preventDefault(); fileInput.click(); return; }
-        if (key === 's') { e.preventDefault(); const ok = await saveViaHandle(); if (!ok) downloadTxt(); return; }
-        if (key === 'e') { e.preventDefault(); downloadTxt(); return; }
-        if (key === 'k') { e.preventDefault(); editor.value=''; saveState(); toast('Cleared'); editor.focus(); return; }
-        if (key === 'w') { e.preventDefault(); wcToggle.click(); return; }
+      window.addEventListener('keydown',e=>{
+        const mod=isMac()?e.metaKey:e.ctrlKey;
+        if(!mod) return;
+        const key=e.key.toLowerCase();
+        if(key==='o'){e.preventDefault();fileInput.click();}
+        if(key==='s'){e.preventDefault();downloadTxt();}
+        if(key==='e'){e.preventDefault();downloadTxt();}
+        if(key==='k'){e.preventDefault();editor.value='';saveState();toast('Cleared');}
+        if(key==='w'){e.preventDefault();wcToggle.click();}
       });
 
-      // Init
       loadState();
       editor.focus();
-      editor.setSelectionRange(editor.value.length, editor.value.length);
     })();
   </script>
 </body>
