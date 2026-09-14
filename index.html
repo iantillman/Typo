@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Typo</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -194,6 +191,59 @@
       .toolbar{flex-wrap:wrap}
       .filename input{width:110px}
     }
+  [hidden] { display: none !important; }
+:root {
+  --read-red-tint: #fbe7e8; --read-red-line: #b73548;
+  --read-yellow-tint: #fff3cd; --read-yellow-line: #916500;
+  --read-blue-tint: #e4efff; --read-blue-line: #2862a6;
+  --read-purple-tint: #f2e8fc; --read-purple-line: #8243a5;
+  --read-surface: #fff; --read-text: #0b2a4a; --read-muted: #49637d;
+}
+.app { min-height: 0; height: 100%; }
+.editorWrap { min-height: 0; }
+.editorStage { position: relative; flex: 1; min-width: 0; min-height: 0; background: var(--read-surface); border-radius: 12px; }
+.editorStage textarea { display: block; height: 100%; min-height: 100%; position: relative; z-index: 2; }
+.read-on .editorStage textarea { background: transparent; }
+.readCanvas { position: absolute; top: 0; left: 0; pointer-events: none; border-radius: 12px; z-index: 1; }
+.readMirror { position: absolute; top: 0; left: 0; visibility: hidden; pointer-events: none; white-space: pre-wrap; overflow-wrap: break-word; word-break: normal; }
+.readPanel { padding: 13px 16px 12px; border-top: 1px solid var(--border); background: var(--read-surface); color: var(--read-text); max-height: 240px; overflow: auto; flex-shrink: 0; }
+.readPanel[hidden], .readCanvas[hidden] { display: none; }
+.readHeading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.readHeading h2 { font-size: 17px; margin: 0; letter-spacing: -.025em; }
+.readHeading .btn { padding: 7px 9px; font-size: 12px; }
+.readSummary { margin: 7px 0 12px; font-size: 12px; color: var(--read-muted); font-variant-numeric: tabular-nums; }
+.readFilters { display: flex; gap: 7px; flex-wrap: wrap; }
+.readFilter { border: 1px solid var(--border); border-radius: 9px; background: var(--read-surface); color: var(--read-text); padding: 8px 10px; cursor: pointer; text-align: left; font: 12px/1.4 var(--font); }
+.readFilter strong { font-size: 14px; margin-right: 5px; }
+.readFilter:disabled { cursor: default; opacity: .65; }
+.readFilter[data-category="very-hard"] { border-bottom: 3px solid var(--read-red-line); }
+.readFilter[data-category="hard"] { border-bottom: 1px solid var(--read-yellow-line); }
+.readFilter[data-category="adverb"], .readFilter[data-category="passive"], .readFilter[data-category="qualifier"] { border-bottom: 2px dashed var(--read-blue-line); }
+.readFilter[data-category="complex-word"] { border-bottom: 2px dotted var(--read-purple-line); }
+.readBudgets { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; margin-top: 11px; color: var(--read-muted); }
+.readBudgets .over { color: #825600; font-weight: 600; }
+.readNote { color: var(--read-muted); font-size: 11px; line-height: 1.5; margin: 9px 0 0; }
+#readMode[aria-pressed="true"] { background: #e4efff; color: #174c98; border-color: #86a9df; }
+.readDialog { width: min(420px, calc(100vw - 32px)); max-height: 75vh; overflow: auto; padding: 22px; border: 1px solid var(--border); border-radius: 16px; background: var(--read-surface); color: var(--read-text); box-shadow: 0 20px 70px #0003; }
+.readDialog::backdrop { background: #0b2a4a25; }
+.readDialog h2 { font-size: 17px; margin: 0 0 12px; }
+.readDialog blockquote { margin: 0 0 12px; padding: 10px 12px; background: var(--read-blue-tint); border-radius: 8px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 120px; overflow: auto; font-size: 14px; }
+.readDialog p { font-size: 13px; line-height: 1.6; }
+.readSuggestions { font-weight: 600; }
+.readDialogActions { display: flex; justify-content: space-between; margin-top: 18px; gap: 8px; }
+button:focus-visible, summary:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+.readSR { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #101820; --panel: #17222f; --fg: #edf3fa; --muted: #b2c2d2; --primary: #8db7ff; --border: #425367; --border2: #34465b; --ring: #8db7ff30; --read-surface: #17222f; --read-text: #edf3fa; --read-muted: #b2c2d2; --read-red-tint: #452b38; --read-red-line: #ff91a5; --read-yellow-tint: #423a22; --read-yellow-line: #edc965; --read-blue-tint: #223c56; --read-blue-line: #8dbbff; --read-purple-tint: #3b2c50; --read-purple-line: #d0a2f2; }
+  body { background: var(--bg); }
+  textarea, .btn, .filename, .tile { background: var(--read-surface); color: var(--fg); }
+  #readMode[aria-pressed="true"] { background: #223c56; color: #b9d4ff; }
+  .readBudgets .over { color: #edc965; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; } }
+@media (prefers-contrast: more) { .readFilter, .readDialog, textarea { border-color: currentColor; } .readNote, .readSummary, .readBudgets { color: var(--read-text); } }
+@media (max-width: 600px) { .wrap { padding: 8px; } .readPanel { max-height: 220px; padding: 11px; } .readHeading h2 { font-size: 15px; } .readFilter { padding: 6px 8px; } .toolbar { flex-wrap: wrap; } .filename input { width: 100px; } }
+
   </style>
 </head>
 
@@ -212,12 +262,26 @@
         <button class="btn export" id="exportBtn" title="Export as .txt (Ctrl/Cmd+E)">
           Export
         </button>
+        <button class="btn" id="readMode" aria-pressed="false" aria-controls="readPanel" title="Toggle readability (Ctrl/Cmd+Shift+R)">Readability</button>
       </div>
 
       <div class="editorWrap">
-        <textarea id="editor" spellcheck="false" aria-label="Text editor"></textarea>
+        <div class="editorStage">
+          <canvas class="readCanvas" id="readCanvas" aria-hidden="true" hidden></canvas>
+          <div class="readMirror" id="readMirror" aria-hidden="true"></div>
+          <textarea id="editor" spellcheck="false" aria-label="Text editor" aria-describedby="readHelp"></textarea>
+        </div>
       </div>
 
+      <section class="readPanel" id="readPanel" aria-label="Readability review" hidden>
+        <div class="readHeading"><h2 id="readGrade">Readability</h2><button class="btn" id="readCollapse">Back to writing</button></div>
+        <p class="readSummary" id="readSummary"></p>
+        <div class="readFilters"><button class="readFilter" data-category="very-hard" data-label="Very hard" disabled><strong>0</strong>Very hard</button><button class="readFilter" data-category="hard" data-label="Hard" disabled><strong>0</strong>Hard</button><button class="readFilter" data-category="adverb" data-label="Adverbs" disabled><strong>0</strong>Adverbs</button><button class="readFilter" data-category="passive" data-label="Passive" disabled><strong>0</strong>Passive</button><button class="readFilter" data-category="qualifier" data-label="Qualifiers" disabled><strong>0</strong>Qualifiers</button><button class="readFilter" data-category="complex-word" data-label="Simpler words" disabled><strong>0</strong>Simpler words</button></div>
+        <div class="readBudgets"><span id="readAdverbBudget"></span><span id="readPassiveBudget"></span></div>
+        <p class="readNote">Grade estimates the US school reading level from word and sentence length, not writing quality. Click a count or highlight to review; suggestions are yours to apply.</p>
+      </section>
+      <span class="readSR" id="readHelp">Toggle readability with Control or Command Shift R. In readability mode, use Alt Down Arrow to review flags, or Tab to the category buttons.</span>
+      <span class="readSR" id="readStatus" role="status" aria-live="polite" aria-atomic="true"></span>
       <div class="footer" id="counts">0 words • 0 chars</div>
     </div>
   </div>
@@ -235,6 +299,8 @@
       const LS_KEY_TEXT = 'typo:text:v7';
       const LS_KEY_FILENAME = 'typo:filename:v7';
 
+      function safeGet(key) { try { return localStorage.getItem(key); } catch (_) { return null; } }
+      function safeSet(key, value) { try { localStorage.setItem(key, value); } catch (_) {} }
       let toastTimer = null;
       function toast(msg) {
         toastEl.textContent = msg;
@@ -262,22 +328,22 @@
       }
 
       function loadState() {
-        const savedText = localStorage.getItem(LS_KEY_TEXT);
+        const savedText = safeGet(LS_KEY_TEXT);
         if (savedText !== null) editor.value = savedText;
 
-        const savedName = localStorage.getItem(LS_KEY_FILENAME);
+        const savedName = safeGet(LS_KEY_FILENAME);
         if (savedName) filenameInput.value = savedName;
 
         updateCounts();
       }
 
       function saveState() {
-        localStorage.setItem(LS_KEY_TEXT, editor.value);
+        safeSet(LS_KEY_TEXT, editor.value);
         updateCounts();
       }
 
       editor.addEventListener('input', saveState);
-      filenameInput.addEventListener('input', () => localStorage.setItem(LS_KEY_FILENAME, filenameInput.value));
+      filenameInput.addEventListener('input', () => safeSet(LS_KEY_FILENAME, filenameInput.value));
 
       function downloadTxt() {
         const base = safeBaseName(filenameInput.value);
@@ -312,5 +378,1083 @@
       editor.setSelectionRange(editor.value.length, editor.value.length);
     })();
   </script>
+<dialog class="readDialog" id="readDialog" aria-labelledby="readIssueTitle" aria-describedby="readExplanation readSuggestions">
+  <h2 id="readIssueTitle"></h2><blockquote id="readQuote"></blockquote>
+  <p id="readExplanation"></p><p class="readSuggestions" id="readSuggestions"></p>
+  <button class="btn" id="readOverlap" hidden>Other flag</button>
+  <div class="readDialogActions"><button class="btn" id="readPrevious">Previous</button><button class="btn" id="readNext">Next</button><button class="btn" id="readClose" autofocus>Close</button></div>
+</dialog>
+<script>(function (root) {
+  const data = {
+    adverbExceptions: 'only family reply apply supply holy ugly early likely lonely silly friendly daily weekly monthly yearly costly deadly lovely elderly orderly timely oily ally rally jelly belly fly rely comply imply multiply assembly anomaly italy july'.split(' '),
+    participles: 'been done gone made said seen taken given known written shown found held kept left sent built brought bought caught taught thought told sold put set cut run come become begun broken chosen driven eaten fallen forgotten frozen hidden spoken stolen worn won lost met paid read drawn grown thrown'.split(' '),
+    qualifiers: 'very|really|quite|rather|somewhat|fairly|pretty|just|simply|actually|basically|essentially|literally|arguably|apparently|seemingly|perhaps|maybe|possibly|probably|generally|usually|typically|often|sort of|kind of|a bit|a little|I think|I believe|I feel|I would argue|it seems|it appears|in my opinion|tends to|somehow|more or less|to some extent'.split('|'),
+    syllables: { people: 2, business: 2, every: 2, different: 3, family: 3, fire: 1, hour: 1, our: 1, quiet: 2, science: 2, serious: 3, beautiful: 3, queue: 1, recipe: 3, poetry: 3, area: 3, create: 2, created: 3, being: 2, the: 1 }
+  };
+  if (typeof module !== 'undefined') module.exports = data;
+  else root.TypoWeakenerData = data;
+})(typeof self !== 'undefined' ? self : globalThis);
+
+(function (root) {
+  // Independent editing prompts: replacements depend on context and are never automatic.
+  const rows = `utilize=use
+utilise=use
+implement=do|set up|start
+facilitate=help|ease
+endeavor=try
+endeavour=try
+ascertain=find out|learn
+commence=begin|start
+terminate=end|stop
+numerous=many
+sufficient=enough
+additional=more|extra
+approximately=about|roughly
+subsequently=later|then
+prior to=before
+in order to=to
+due to the fact that=because
+in the event that=if
+at this point in time=now
+a majority of=most
+with regard to=about
+in the near future=soon
+accomplish=do|finish
+accumulate=gather
+acquire=get
+activate=start
+adjacent to=next to
+adjustment=change
+advantageous=helpful
+aggregate=total
+allocate=set aside|give
+ameliorate=improve
+anticipate=expect
+apparent=clear
+appreciable=large|clear
+apprise=tell
+articulate=explain|say
+as a consequence=so
+as a result of=because of
+as regards=about
+assist=help
+assistance=help
+at present=now
+at the present time=now
+at a later date=later
+at all times=always
+at your earliest convenience=when you can
+attempt=try
+attain=reach
+augment=add to
+authorize=allow
+be cognizant of=know
+beneficial=helpful
+by means of=by|with
+capability=ability
+cease=stop
+circumvent=avoid
+collaborate=work together
+combine=join
+communicate=tell|share
+compensate=pay
+complete=finish
+component=part
+comprehend=understand
+comprise=include
+conceal=hide
+concerning=about
+conclude=end
+concur=agree
+conduct=run|do
+consequently=so
+considerable=large
+consolidate=merge|join
+constitute=make up
+construct=build
+consume=use|eat
+contemplate=consider
+contingent upon=dependent on
+continue to=keep
+contribute=give
+convene=meet
+conversely=by contrast
+currently=now
+decrease=reduce|cut
+deem=consider
+demonstrate=show
+depart=leave
+designate=name|choose
+desire=want
+despite the fact that=although
+determine=find|decide
+detrimental=harmful
+diminish=reduce
+disclose=share|reveal
+discontinue=stop
+disseminate=share|spread
+endeavor to=try to
+enquire=ask
+ensure=make sure
+enumerate=list
+equitable=fair
+equivalent=equal
+establish=set up
+evaluate=assess
+evident=clear
+excessive=too much
+exclusively=only
+execute=do|carry out
+exhibit=show
+expedite=speed up
+expenditure=spending
+expiration=end
+explicit=clear
+extensive=broad|large
+finalize=finish
+for the duration of=during
+for the purpose of=for
+for the reason that=because
+formulate=plan|create
+frequently=often
+furnish=give
+has the ability to=can
+hence=so
+herein=in this
+however=but
+identical=same
+illustrate=show
+immediately=now|at once
+in accordance with=under|following
+in addition=also
+in advance of=before
+in close proximity to=near
+in conjunction with=with
+in excess of=more than
+in light of=because of
+in lieu of=instead of
+in relation to=about
+in spite of the fact that=although
+in the absence of=without
+in the amount of=for
+in the course of=during
+in the vicinity of=near
+in view of=because of
+inception=start
+indicate=show
+individual=person
+initiate=start
+inquire=ask
+inquiry=question
+irrespective of=regardless of
+is able to=can
+is indicative of=shows
+it is necessary to=must
+leverage=use
+locate=find
+location=place
+magnitude=size
+maintain=keep
+make a decision=decide
+make an adjustment=adjust
+methodology=method
+modify=change
+monitor=watch|track
+necessitate=require
+nevertheless=still|but
+notwithstanding=despite
+notification=notice
+notify=tell
+objective=goal
+obtain=get
+on a daily basis=daily
+on account of=because of
+on the grounds that=because
+operate=run
+optimal=best
+optimum=best
+owing to=because of
+participate=take part
+per annum=a year
+perform=do
+permit=allow|let
+pertaining to=about
+portion=part
+possess=have
+preclude=prevent
+predominantly=mostly
+preserve=keep
+previously=before
+principal=main
+prioritize=rank
+proceed=go ahead
+procure=get|buy
+provide assistance=help
+provided that=if
+purchase=buy
+pursuant to=under
+remainder=rest
+remuneration=pay
+render=make
+request=ask for
+requirement=need
+reside=live
+retain=keep
+review=check
+selection=choice
+similar to=like
+solicit=ask for
+strategize=plan
+substantial=large
+successfully complete=finish
+supplement=add to
+take into consideration=consider
+the fact that=that
+therefore=so
+there is a need to=we need to
+throughout the duration of=throughout
+transmit=send
+undergo=have|go through
+until such time as=until
+upon=on
+usage=use
+validate=check
+via=through|by
+whilst=while
+with reference to=about
+with respect to=about
+with the exception of=except
+within the framework of=within
+witness=see`;
+  const data = Object.fromEntries(rows.split('\n').map(row => { const [key, value] = row.split('='); return [key, value.split('|')]; }));
+  if (typeof module !== 'undefined') module.exports = data;
+  else root.TypoComplexWords = data;
+})(typeof self !== 'undefined' ? self : globalThis);
+
+(function (root) {
+  'use strict';
+  const commonJS = typeof module !== 'undefined' && module.exports;
+  const data = commonJS ? require('./data/weakeners.js') : root.TypoWeakenerData;
+  const dictionary = commonJS ? require('./data/complex-words.js') : root.TypoComplexWords;
+  // An independent approximation. Hemingway's actual formula and cutoffs are not public.
+  const config = Object.freeze({ minimumSentenceWords: 14, hard: 10, veryHard: 14, wordsPerMinute: 265 });
+  const exceptions = new Set(data.adverbExceptions);
+  const irregular = new Set(data.participles);
+  const be = new Set('am is are was were be been being'.split(' '));
+  const keys = ['very-hard', 'hard', 'weakener', 'complex-word', 'adverb', 'passive', 'qualifier'];
+  function words(text) {
+    return Array.from(text.matchAll(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu), m => ({ text: m[0], lower: m[0].toLowerCase(), start: m.index, end: m.index + m[0].length }));
+  }
+  function paragraphs(text) {
+    const results = [];
+    let start = 0;
+    for (const m of text.matchAll(/\r?\n[\t ]*\r?\n(?:[\t ]*\r?\n)*/g)) {
+      if (text.slice(start, m.index).trim()) results.push({ text: text.slice(start, m.index), start });
+      start = m.index + m[0].length;
+    }
+    if (text.slice(start).trim()) results.push({ text: text.slice(start), start });
+    return results;
+  }
+  function sentences(text) {
+    const result = [];
+    let start = 0;
+    function add(end) {
+      const raw = text.slice(start, end);
+      const lead = raw.search(/\S/u);
+      if (lead >= 0 && words(raw).length) {
+        const stop = end - (raw.match(/\s*$/u)[0].length);
+        result.push({ text: text.slice(start + lead, stop), start: start + lead, end: stop });
+      }
+      start = end;
+    }
+    for (let i = 0; i < text.length; i++) {
+      if (!/[.!?…]/u.test(text[i])) continue;
+      if (text[i] === '.') {
+        // A run of ASCII dots is an internal ellipsis. Unicode … can end a sentence.
+        if (text[i - 1] === '.' || text[i + 1] === '.') continue;
+        if (/\d/.test(text[i - 1] || '') && /\d/.test(text[i + 1] || '')) continue;
+        if (/(?:\b(?:Mr|Mrs|Ms|Dr|Prof|etc|vs)|\be\.g|\bi\.e|\bU\.S|\bPh\.D|\ba\.m|\bp\.m)\.$/i.test(text.slice(Math.max(0, i - 12), i + 1))) continue;
+      }
+      let end = i + 1;
+      while (/[.!?…"'”’\])]/u.test(text[end] || '\0')) end++;
+      if (end === text.length || /\s/u.test(text[end])) { add(end); i = end - 1; }
+    }
+    add(text.length);
+    return result;
+  }
+  function countSyllables(input) {
+    let word = input.toLowerCase().replace(/[^a-z]/g, '');
+    if (data.syllables[word] !== undefined) return data.syllables[word];
+    const le = /[^aeiouy]le$/.test(word);
+    word = word.replace(/e$/, '');
+    return Math.max(1, (word.match(/[aeiouy]+/g) || []).length + (le ? 1 : 0));
+  }
+  function ari(letters, wordCount, sentenceCount) {
+    return wordCount && sentenceCount ? 4.71 * letters / wordCount + 0.5 * wordCount / sentenceCount - 21.43 : 0;
+  }
+  function prepare(entries) {
+    const map = new Map();
+    for (const [phrase, value] of entries) {
+      const tokens = words(phrase).map(w => w.lower);
+      const list = map.get(tokens[0]) || [];
+      list.push({ tokens, value }); map.set(tokens[0], list);
+    }
+    for (const list of map.values()) list.sort((a, b) => b.tokens.length - a.tokens.length);
+    return map;
+  }
+  const qualifierMap = prepare(data.qualifiers.map(p => [p, null]));
+  const complexMap = prepare(Object.entries(dictionary));
+  function phraseMatches(text, tokens, map, visit) {
+    for (let i = 0; i < tokens.length; i++) {
+      const match = (map.get(tokens[i].lower) || []).find(entry => entry.tokens.every((w, j) => tokens[i + j]?.lower === w && (!j || /^\s+$/u.test(text.slice(tokens[i + j - 1].end, tokens[i + j].start)))));
+      if (match) { visit(tokens[i].start, tokens[i + match.tokens.length - 1].end, match.value, i); i += match.tokens.length - 1; }
+    }
+  }
+  function paragraphAnalysis(text) {
+    const tokens = words(text);
+    const spans = [];
+    const sentenceList = sentences(text);
+    const letters = (text.match(/\p{L}/gu) || []).length;
+    let passiveSentences = 0;
+    const add = (start, end, category, message, extra = {}) => spans.push({ start, end, category, message, ...extra });
+    for (const sentence of sentenceList) {
+      const ws = words(sentence.text);
+      const level = ari((sentence.text.match(/\p{L}/gu) || []).length, ws.length, 1);
+      if (ws.length >= config.minimumSentenceWords && level >= config.hard) {
+        const category = level >= config.veryHard ? 'very-hard' : 'hard';
+        add(sentence.start, sentence.end, category, category === 'very-hard' ? 'This sentence asks a lot of the reader. Look for a natural place to pause.' : 'This sentence may take an extra read. Check whether its main point is easy to follow.');
+      }
+      let hasPassive = false;
+      for (let i = 0; i < ws.length; i++) {
+        if (!be.has(ws[i].lower)) continue;
+        // At most two intervening words; never cross a sentence or punctuation boundary.
+        for (let j = i + 1; j <= Math.min(i + 3, ws.length - 1); j++) {
+          if (!/^[\s\p{L}\p{N}'’\-]*$/u.test(sentence.text.slice(ws[i].end, ws[j].start))) break;
+          if (/ed$/.test(ws[j].lower) || irregular.has(ws[j].lower)) {
+            add(sentence.start + ws[i].start, sentence.start + ws[j].end, 'weakener', 'Possible passive voice: consider naming who acts. Descriptions such as “is tired” can also match.', { subtype: 'passive' });
+            hasPassive = true; i = j; break;
+          }
+        }
+      }
+      if (hasPassive) passiveSentences++;
+    }
+    for (const word of tokens) if (/ly$/.test(word.lower) && !exceptions.has(word.lower)) add(word.start, word.end, 'weakener', 'This adverb may soften the action. Check whether it adds something useful.', { subtype: 'adverb' });
+    phraseMatches(text, tokens, qualifierMap, (start, end, _, i) => {
+      // A lightweight guard for common literal uses of pretty, not a part-of-speech parser.
+      if (tokens[i].lower === 'pretty' && /^(?:a|an|the|this|that|her|his|my|your|our|their)$/.test(tokens[i - 1]?.lower || '')) return;
+      add(start, end, 'weakener', 'This qualifier softens the statement. Keep it if that nuance is intentional.', { subtype: 'qualifier' });
+    });
+    phraseMatches(text, tokens, complexMap, (start, end, suggestions) => {
+      const original = text.slice(start, end);
+      const adapted = suggestions.map(s => original === original.toUpperCase() ? s.toUpperCase() : /^\p{Lu}/u.test(original) ? s[0].toUpperCase() + s.slice(1) : s);
+      add(start, end, 'complex-word', 'A shorter expression may fit here. Check the meaning before changing it.', { suggestions: adapted });
+    });
+    spans.sort((a, b) => a.start - b.start || b.end - a.end || a.category.localeCompare(b.category) || (a.subtype || '').localeCompare(b.subtype || ''));
+    return { spans, words: tokens.length, letters, sentences: sentenceList.length, passiveSentences };
+  }
+  function hash(text) {
+    let h = 2166136261;
+    for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 16777619);
+    return (h >>> 0).toString(16);
+  }
+  function createAnalyzer() {
+    let cache = new Map();
+    const analyzeCached = function (text) {
+      if (typeof text !== 'string') throw new TypeError('analyze expects a string');
+      const blocks = paragraphs(text), nextCache = new Map(), spans = [];
+      let wordCount = 0, sentenceCount = 0, letterCount = 0, passiveSentences = 0, hits = 0, misses = 0;
+      for (const block of blocks) {
+        const key = hash(block.text);
+        // Compare content as well as the hash: collisions must never return wrong offsets.
+        let entry = (nextCache.get(key) || cache.get(key) || []).find(e => e.text === block.text);
+        if (entry) hits++;
+        else { entry = { text: block.text, result: paragraphAnalysis(block.text) }; misses++; }
+        const bucket = nextCache.get(key) || [];
+        if (!bucket.includes(entry)) bucket.push(entry);
+        nextCache.set(key, bucket);
+        const r = entry.result;
+        wordCount += r.words; sentenceCount += r.sentences; letterCount += r.letters; passiveSentences += r.passiveSentences;
+        for (const span of r.spans) spans.push({ ...span, suggestions: span.suggestions?.slice(), start: span.start + block.start, end: span.end + block.start });
+      }
+      cache = nextCache;
+      analyzeCached.cacheInfo = { hits, misses };
+      const counts = Object.fromEntries(keys.map(k => [k, 0]));
+      for (const span of spans) { counts[span.category]++; if (span.subtype) counts[span.subtype]++; }
+      return { spans, stats: { grade: Math.max(0, Math.round(ari(letterCount, wordCount, sentenceCount))), words: wordCount, sentences: sentenceCount, paragraphs: blocks.length, characters: text.length, readingTimeSeconds: Math.round(wordCount / config.wordsPerMinute * 60), counts, passiveSentences } };
+    };
+    return analyzeCached;
+  }
+  // Public analyze is pure; sessions can explicitly opt into an isolated paragraph cache.
+  function analyze(text) { return createAnalyzer()(text); }
+  const api = { analyze, createAnalyzer, countSyllables, words, sentences, paragraphs, ari, config };
+  if (commonJS) module.exports = api;
+  else root.TypoAnalysis = api;
+})(typeof self !== 'undefined' ? self : globalThis);
+</script>
+<script type="text/plain" id="readWorkerSource">(function (root) {
+  const data = {
+    adverbExceptions: 'only family reply apply supply holy ugly early likely lonely silly friendly daily weekly monthly yearly costly deadly lovely elderly orderly timely oily ally rally jelly belly fly rely comply imply multiply assembly anomaly italy july'.split(' '),
+    participles: 'been done gone made said seen taken given known written shown found held kept left sent built brought bought caught taught thought told sold put set cut run come become begun broken chosen driven eaten fallen forgotten frozen hidden spoken stolen worn won lost met paid read drawn grown thrown'.split(' '),
+    qualifiers: 'very|really|quite|rather|somewhat|fairly|pretty|just|simply|actually|basically|essentially|literally|arguably|apparently|seemingly|perhaps|maybe|possibly|probably|generally|usually|typically|often|sort of|kind of|a bit|a little|I think|I believe|I feel|I would argue|it seems|it appears|in my opinion|tends to|somehow|more or less|to some extent'.split('|'),
+    syllables: { people: 2, business: 2, every: 2, different: 3, family: 3, fire: 1, hour: 1, our: 1, quiet: 2, science: 2, serious: 3, beautiful: 3, queue: 1, recipe: 3, poetry: 3, area: 3, create: 2, created: 3, being: 2, the: 1 }
+  };
+  if (typeof module !== 'undefined') module.exports = data;
+  else root.TypoWeakenerData = data;
+})(typeof self !== 'undefined' ? self : globalThis);
+
+(function (root) {
+  // Independent editing prompts: replacements depend on context and are never automatic.
+  const rows = `utilize=use
+utilise=use
+implement=do|set up|start
+facilitate=help|ease
+endeavor=try
+endeavour=try
+ascertain=find out|learn
+commence=begin|start
+terminate=end|stop
+numerous=many
+sufficient=enough
+additional=more|extra
+approximately=about|roughly
+subsequently=later|then
+prior to=before
+in order to=to
+due to the fact that=because
+in the event that=if
+at this point in time=now
+a majority of=most
+with regard to=about
+in the near future=soon
+accomplish=do|finish
+accumulate=gather
+acquire=get
+activate=start
+adjacent to=next to
+adjustment=change
+advantageous=helpful
+aggregate=total
+allocate=set aside|give
+ameliorate=improve
+anticipate=expect
+apparent=clear
+appreciable=large|clear
+apprise=tell
+articulate=explain|say
+as a consequence=so
+as a result of=because of
+as regards=about
+assist=help
+assistance=help
+at present=now
+at the present time=now
+at a later date=later
+at all times=always
+at your earliest convenience=when you can
+attempt=try
+attain=reach
+augment=add to
+authorize=allow
+be cognizant of=know
+beneficial=helpful
+by means of=by|with
+capability=ability
+cease=stop
+circumvent=avoid
+collaborate=work together
+combine=join
+communicate=tell|share
+compensate=pay
+complete=finish
+component=part
+comprehend=understand
+comprise=include
+conceal=hide
+concerning=about
+conclude=end
+concur=agree
+conduct=run|do
+consequently=so
+considerable=large
+consolidate=merge|join
+constitute=make up
+construct=build
+consume=use|eat
+contemplate=consider
+contingent upon=dependent on
+continue to=keep
+contribute=give
+convene=meet
+conversely=by contrast
+currently=now
+decrease=reduce|cut
+deem=consider
+demonstrate=show
+depart=leave
+designate=name|choose
+desire=want
+despite the fact that=although
+determine=find|decide
+detrimental=harmful
+diminish=reduce
+disclose=share|reveal
+discontinue=stop
+disseminate=share|spread
+endeavor to=try to
+enquire=ask
+ensure=make sure
+enumerate=list
+equitable=fair
+equivalent=equal
+establish=set up
+evaluate=assess
+evident=clear
+excessive=too much
+exclusively=only
+execute=do|carry out
+exhibit=show
+expedite=speed up
+expenditure=spending
+expiration=end
+explicit=clear
+extensive=broad|large
+finalize=finish
+for the duration of=during
+for the purpose of=for
+for the reason that=because
+formulate=plan|create
+frequently=often
+furnish=give
+has the ability to=can
+hence=so
+herein=in this
+however=but
+identical=same
+illustrate=show
+immediately=now|at once
+in accordance with=under|following
+in addition=also
+in advance of=before
+in close proximity to=near
+in conjunction with=with
+in excess of=more than
+in light of=because of
+in lieu of=instead of
+in relation to=about
+in spite of the fact that=although
+in the absence of=without
+in the amount of=for
+in the course of=during
+in the vicinity of=near
+in view of=because of
+inception=start
+indicate=show
+individual=person
+initiate=start
+inquire=ask
+inquiry=question
+irrespective of=regardless of
+is able to=can
+is indicative of=shows
+it is necessary to=must
+leverage=use
+locate=find
+location=place
+magnitude=size
+maintain=keep
+make a decision=decide
+make an adjustment=adjust
+methodology=method
+modify=change
+monitor=watch|track
+necessitate=require
+nevertheless=still|but
+notwithstanding=despite
+notification=notice
+notify=tell
+objective=goal
+obtain=get
+on a daily basis=daily
+on account of=because of
+on the grounds that=because
+operate=run
+optimal=best
+optimum=best
+owing to=because of
+participate=take part
+per annum=a year
+perform=do
+permit=allow|let
+pertaining to=about
+portion=part
+possess=have
+preclude=prevent
+predominantly=mostly
+preserve=keep
+previously=before
+principal=main
+prioritize=rank
+proceed=go ahead
+procure=get|buy
+provide assistance=help
+provided that=if
+purchase=buy
+pursuant to=under
+remainder=rest
+remuneration=pay
+render=make
+request=ask for
+requirement=need
+reside=live
+retain=keep
+review=check
+selection=choice
+similar to=like
+solicit=ask for
+strategize=plan
+substantial=large
+successfully complete=finish
+supplement=add to
+take into consideration=consider
+the fact that=that
+therefore=so
+there is a need to=we need to
+throughout the duration of=throughout
+transmit=send
+undergo=have|go through
+until such time as=until
+upon=on
+usage=use
+validate=check
+via=through|by
+whilst=while
+with reference to=about
+with respect to=about
+with the exception of=except
+within the framework of=within
+witness=see`;
+  const data = Object.fromEntries(rows.split('\n').map(row => { const [key, value] = row.split('='); return [key, value.split('|')]; }));
+  if (typeof module !== 'undefined') module.exports = data;
+  else root.TypoComplexWords = data;
+})(typeof self !== 'undefined' ? self : globalThis);
+
+(function (root) {
+  'use strict';
+  const commonJS = typeof module !== 'undefined' && module.exports;
+  const data = commonJS ? require('./data/weakeners.js') : root.TypoWeakenerData;
+  const dictionary = commonJS ? require('./data/complex-words.js') : root.TypoComplexWords;
+  // An independent approximation. Hemingway's actual formula and cutoffs are not public.
+  const config = Object.freeze({ minimumSentenceWords: 14, hard: 10, veryHard: 14, wordsPerMinute: 265 });
+  const exceptions = new Set(data.adverbExceptions);
+  const irregular = new Set(data.participles);
+  const be = new Set('am is are was were be been being'.split(' '));
+  const keys = ['very-hard', 'hard', 'weakener', 'complex-word', 'adverb', 'passive', 'qualifier'];
+  function words(text) {
+    return Array.from(text.matchAll(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu), m => ({ text: m[0], lower: m[0].toLowerCase(), start: m.index, end: m.index + m[0].length }));
+  }
+  function paragraphs(text) {
+    const results = [];
+    let start = 0;
+    for (const m of text.matchAll(/\r?\n[\t ]*\r?\n(?:[\t ]*\r?\n)*/g)) {
+      if (text.slice(start, m.index).trim()) results.push({ text: text.slice(start, m.index), start });
+      start = m.index + m[0].length;
+    }
+    if (text.slice(start).trim()) results.push({ text: text.slice(start), start });
+    return results;
+  }
+  function sentences(text) {
+    const result = [];
+    let start = 0;
+    function add(end) {
+      const raw = text.slice(start, end);
+      const lead = raw.search(/\S/u);
+      if (lead >= 0 && words(raw).length) {
+        const stop = end - (raw.match(/\s*$/u)[0].length);
+        result.push({ text: text.slice(start + lead, stop), start: start + lead, end: stop });
+      }
+      start = end;
+    }
+    for (let i = 0; i < text.length; i++) {
+      if (!/[.!?…]/u.test(text[i])) continue;
+      if (text[i] === '.') {
+        // A run of ASCII dots is an internal ellipsis. Unicode … can end a sentence.
+        if (text[i - 1] === '.' || text[i + 1] === '.') continue;
+        if (/\d/.test(text[i - 1] || '') && /\d/.test(text[i + 1] || '')) continue;
+        if (/(?:\b(?:Mr|Mrs|Ms|Dr|Prof|etc|vs)|\be\.g|\bi\.e|\bU\.S|\bPh\.D|\ba\.m|\bp\.m)\.$/i.test(text.slice(Math.max(0, i - 12), i + 1))) continue;
+      }
+      let end = i + 1;
+      while (/[.!?…"'”’\])]/u.test(text[end] || '\0')) end++;
+      if (end === text.length || /\s/u.test(text[end])) { add(end); i = end - 1; }
+    }
+    add(text.length);
+    return result;
+  }
+  function countSyllables(input) {
+    let word = input.toLowerCase().replace(/[^a-z]/g, '');
+    if (data.syllables[word] !== undefined) return data.syllables[word];
+    const le = /[^aeiouy]le$/.test(word);
+    word = word.replace(/e$/, '');
+    return Math.max(1, (word.match(/[aeiouy]+/g) || []).length + (le ? 1 : 0));
+  }
+  function ari(letters, wordCount, sentenceCount) {
+    return wordCount && sentenceCount ? 4.71 * letters / wordCount + 0.5 * wordCount / sentenceCount - 21.43 : 0;
+  }
+  function prepare(entries) {
+    const map = new Map();
+    for (const [phrase, value] of entries) {
+      const tokens = words(phrase).map(w => w.lower);
+      const list = map.get(tokens[0]) || [];
+      list.push({ tokens, value }); map.set(tokens[0], list);
+    }
+    for (const list of map.values()) list.sort((a, b) => b.tokens.length - a.tokens.length);
+    return map;
+  }
+  const qualifierMap = prepare(data.qualifiers.map(p => [p, null]));
+  const complexMap = prepare(Object.entries(dictionary));
+  function phraseMatches(text, tokens, map, visit) {
+    for (let i = 0; i < tokens.length; i++) {
+      const match = (map.get(tokens[i].lower) || []).find(entry => entry.tokens.every((w, j) => tokens[i + j]?.lower === w && (!j || /^\s+$/u.test(text.slice(tokens[i + j - 1].end, tokens[i + j].start)))));
+      if (match) { visit(tokens[i].start, tokens[i + match.tokens.length - 1].end, match.value, i); i += match.tokens.length - 1; }
+    }
+  }
+  function paragraphAnalysis(text) {
+    const tokens = words(text);
+    const spans = [];
+    const sentenceList = sentences(text);
+    const letters = (text.match(/\p{L}/gu) || []).length;
+    let passiveSentences = 0;
+    const add = (start, end, category, message, extra = {}) => spans.push({ start, end, category, message, ...extra });
+    for (const sentence of sentenceList) {
+      const ws = words(sentence.text);
+      const level = ari((sentence.text.match(/\p{L}/gu) || []).length, ws.length, 1);
+      if (ws.length >= config.minimumSentenceWords && level >= config.hard) {
+        const category = level >= config.veryHard ? 'very-hard' : 'hard';
+        add(sentence.start, sentence.end, category, category === 'very-hard' ? 'This sentence asks a lot of the reader. Look for a natural place to pause.' : 'This sentence may take an extra read. Check whether its main point is easy to follow.');
+      }
+      let hasPassive = false;
+      for (let i = 0; i < ws.length; i++) {
+        if (!be.has(ws[i].lower)) continue;
+        // At most two intervening words; never cross a sentence or punctuation boundary.
+        for (let j = i + 1; j <= Math.min(i + 3, ws.length - 1); j++) {
+          if (!/^[\s\p{L}\p{N}'’\-]*$/u.test(sentence.text.slice(ws[i].end, ws[j].start))) break;
+          if (/ed$/.test(ws[j].lower) || irregular.has(ws[j].lower)) {
+            add(sentence.start + ws[i].start, sentence.start + ws[j].end, 'weakener', 'Possible passive voice: consider naming who acts. Descriptions such as “is tired” can also match.', { subtype: 'passive' });
+            hasPassive = true; i = j; break;
+          }
+        }
+      }
+      if (hasPassive) passiveSentences++;
+    }
+    for (const word of tokens) if (/ly$/.test(word.lower) && !exceptions.has(word.lower)) add(word.start, word.end, 'weakener', 'This adverb may soften the action. Check whether it adds something useful.', { subtype: 'adverb' });
+    phraseMatches(text, tokens, qualifierMap, (start, end, _, i) => {
+      // A lightweight guard for common literal uses of pretty, not a part-of-speech parser.
+      if (tokens[i].lower === 'pretty' && /^(?:a|an|the|this|that|her|his|my|your|our|their)$/.test(tokens[i - 1]?.lower || '')) return;
+      add(start, end, 'weakener', 'This qualifier softens the statement. Keep it if that nuance is intentional.', { subtype: 'qualifier' });
+    });
+    phraseMatches(text, tokens, complexMap, (start, end, suggestions) => {
+      const original = text.slice(start, end);
+      const adapted = suggestions.map(s => original === original.toUpperCase() ? s.toUpperCase() : /^\p{Lu}/u.test(original) ? s[0].toUpperCase() + s.slice(1) : s);
+      add(start, end, 'complex-word', 'A shorter expression may fit here. Check the meaning before changing it.', { suggestions: adapted });
+    });
+    spans.sort((a, b) => a.start - b.start || b.end - a.end || a.category.localeCompare(b.category) || (a.subtype || '').localeCompare(b.subtype || ''));
+    return { spans, words: tokens.length, letters, sentences: sentenceList.length, passiveSentences };
+  }
+  function hash(text) {
+    let h = 2166136261;
+    for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 16777619);
+    return (h >>> 0).toString(16);
+  }
+  function createAnalyzer() {
+    let cache = new Map();
+    const analyzeCached = function (text) {
+      if (typeof text !== 'string') throw new TypeError('analyze expects a string');
+      const blocks = paragraphs(text), nextCache = new Map(), spans = [];
+      let wordCount = 0, sentenceCount = 0, letterCount = 0, passiveSentences = 0, hits = 0, misses = 0;
+      for (const block of blocks) {
+        const key = hash(block.text);
+        // Compare content as well as the hash: collisions must never return wrong offsets.
+        let entry = (nextCache.get(key) || cache.get(key) || []).find(e => e.text === block.text);
+        if (entry) hits++;
+        else { entry = { text: block.text, result: paragraphAnalysis(block.text) }; misses++; }
+        const bucket = nextCache.get(key) || [];
+        if (!bucket.includes(entry)) bucket.push(entry);
+        nextCache.set(key, bucket);
+        const r = entry.result;
+        wordCount += r.words; sentenceCount += r.sentences; letterCount += r.letters; passiveSentences += r.passiveSentences;
+        for (const span of r.spans) spans.push({ ...span, suggestions: span.suggestions?.slice(), start: span.start + block.start, end: span.end + block.start });
+      }
+      cache = nextCache;
+      analyzeCached.cacheInfo = { hits, misses };
+      const counts = Object.fromEntries(keys.map(k => [k, 0]));
+      for (const span of spans) { counts[span.category]++; if (span.subtype) counts[span.subtype]++; }
+      return { spans, stats: { grade: Math.max(0, Math.round(ari(letterCount, wordCount, sentenceCount))), words: wordCount, sentences: sentenceCount, paragraphs: blocks.length, characters: text.length, readingTimeSeconds: Math.round(wordCount / config.wordsPerMinute * 60), counts, passiveSentences } };
+    };
+    return analyzeCached;
+  }
+  // Public analyze is pure; sessions can explicitly opt into an isolated paragraph cache.
+  function analyze(text) { return createAnalyzer()(text); }
+  const api = { analyze, createAnalyzer, countSyllables, words, sentences, paragraphs, ari, config };
+  if (commonJS) module.exports = api;
+  else root.TypoAnalysis = api;
+})(typeof self !== 'undefined' ? self : globalThis);
+
+const analyze = TypoAnalysis.createAnalyzer(); self.onmessage = e => { const { text, revision } = e.data; self.postMessage({ text, revision, result: analyze(text) }); };</script>
+<script>(function () {
+  'use strict';
+  const editor = document.getElementById('editor');
+  const app = document.querySelector('.app');
+  const button = document.getElementById('readMode');
+  const panel = document.getElementById('readPanel');
+  const canvas = document.getElementById('readCanvas');
+  const mirror = document.getElementById('readMirror');
+  const dialog = document.getElementById('readDialog');
+  const ctx = canvas.getContext('2d');
+  const status = document.getElementById('readStatus');
+  const grade = document.getElementById('readGrade');
+  const summary = document.getElementById('readSummary');
+  const filterButtons = [...document.querySelectorAll('.readFilter')];
+  const modeKey = 'typo:readability:mode:v1'; // Typo has one saved document slot, even when renamed.
+  const labels = { 'very-hard': 'Very hard sentence', hard: 'Hard sentence', adverb: 'Adverb', passive: 'Possible passive voice', qualifier: 'Qualifier', 'complex-word': 'Simpler wording' };
+  let enabled = false, composing = false, revision = 0, timer, paintFrame, announcementTimer;
+  let result = null, analyzedText = '', worker = null, fallbackAnalyze = null;
+  let hitAreas = [], focusedIndex = -1, activeFilter = null, restoreFocus = null;
+  let previousGrade = null, lastPointer = null, mirrorText = null;
+  const range = document.createRange();
+  function preserveScroll(fn) {
+    const top = editor.scrollTop, left = editor.scrollLeft, windowX = window.scrollX, windowY = window.scrollY;
+    fn();
+    editor.scrollTop = top; editor.scrollLeft = left;
+    window.scrollTo(windowX, windowY);
+  }
+  function createWorker() {
+    if (worker) return worker;
+    const code = document.getElementById('readWorkerSource').textContent;
+    const url = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
+    try {
+      worker = new Worker(url);
+      worker.onmessage = e => {
+        if (!enabled || composing || e.data.revision !== revision) return;
+        accept(e.data.result, e.data.text);
+      };
+      worker.onerror = () => {
+        worker.terminate(); worker = null;
+        grade.textContent = 'Readability is unavailable';
+        summary.textContent = 'This browser could not run the background analysis. Your text is unchanged.';
+      };
+      return worker;
+    } finally { URL.revokeObjectURL(url); }
+  }
+  function schedule() {
+    clearTimeout(timer); revision++;
+    result = null; hitAreas = []; canvas.hidden = true;
+    for (const b of filterButtons) b.disabled = true;
+    if (!enabled || composing) return;
+    grade.textContent = 'Reading your text…';
+    timer = setTimeout(() => {
+      if (!enabled || composing) return;
+      const text = editor.value;
+      try { createWorker().postMessage({ text, revision }); }
+      catch (_) {
+        // Never run long-document analysis on the UI thread if workers are unavailable.
+        if ((text.match(/\S+/g) || []).length > 10000) {
+          grade.textContent = 'Background analysis unavailable';
+          summary.textContent = 'Try a browser that supports local Web Workers for this long document.';
+          return;
+        }
+        fallbackAnalyze ||= TypoAnalysis.createAnalyzer();
+        accept(fallbackAnalyze(text), text);
+      }
+    }, 200);
+  }
+  function accept(next, text) {
+    if (text !== editor.value || !enabled || composing) return;
+    result = next; analyzedText = text; focusedIndex = -1;
+    const s = result.stats;
+    grade.textContent = s.words ? `Grade ${s.grade} — ${s.grade <= 9 ? 'good readability' : 'hard to read'}` : 'Start writing to see readability';
+    const time = s.words ? (s.readingTimeSeconds < 60 ? 'under 1 min' : `about ${Math.max(1, Math.round(s.readingTimeSeconds / 60))} min`) : '0 min';
+    summary.textContent = `${s.words.toLocaleString()} words · ${s.sentences.toLocaleString()} sentences · ${s.paragraphs.toLocaleString()} paragraphs · ${s.characters.toLocaleString()} characters · ${time} read`;
+    for (const b of filterButtons) {
+      const count = s.counts[b.dataset.category];
+      b.querySelector('strong').textContent = count.toLocaleString();
+      b.disabled = !count;
+      b.setAttribute('aria-label', `${count} ${b.dataset.label}. Go to next instance.`);
+    }
+    const adverbLimit = Math.ceil(s.words / 100), passiveLimit = Math.floor(s.sentences / 5);
+    budget('readAdverbBudget', s.counts.adverb, adverbLimit, 'Adverbs');
+    budget('readPassiveBudget', s.passiveSentences, passiveLimit, 'Sentences with passive voice');
+    mirrorText = document.createTextNode(text + '\n'); mirror.replaceChildren(mirrorText);
+    canvas.hidden = false; requestPaint();
+    if (previousGrade !== s.grade) {
+      clearTimeout(announcementTimer);
+      announcementTimer = setTimeout(() => { if (enabled && result) { status.textContent = grade.textContent; previousGrade = s.grade; } }, 1200);
+    }
+  }
+  function budget(id, count, limit, label) {
+    const el = document.getElementById(id);
+    el.textContent = `${label}: ${count} of ${limit}${count > limit ? ' — above guide' : ''}`;
+    el.classList.toggle('over', count > limit);
+  }
+  function setMode(on) {
+    preserveScroll(() => {
+      enabled = on; app.classList.toggle('read-on', on);
+      button.setAttribute('aria-pressed', String(on));
+      button.textContent = on ? 'Readability: on' : 'Readability';
+      panel.hidden = !on; canvas.hidden = !on;
+      try { localStorage.setItem(modeKey, on ? 'on' : 'off'); } catch (_) {}
+      if (on) schedule();
+      else {
+        clearTimeout(timer); clearTimeout(announcementTimer); revision++;
+        worker?.terminate(); worker = null; fallbackAnalyze = null;
+        result = null; hitAreas = []; mirror.replaceChildren(); mirrorText = null;
+        if (dialog.open) dialog.close();
+      }
+    });
+  }
+  // Pointer use of the mode button leaves keyboard focus and the native selection in the editor.
+  button.addEventListener('mousedown', e => e.preventDefault());
+  button.addEventListener('click', () => setMode(!enabled));
+  document.getElementById('readCollapse').addEventListener('mousedown', e => e.preventDefault());
+  document.getElementById('readCollapse').addEventListener('click', () => setMode(false));
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'r') {
+      e.preventDefault(); if (!composing) setMode(!enabled);
+    }
+    if (enabled && !dialog.open && e.altKey && e.key === 'ArrowDown') { e.preventDefault(); nextIssue(null); }
+  });
+  editor.addEventListener('compositionstart', () => { composing = true; clearTimeout(timer); revision++; canvas.hidden = true; result = null; });
+  editor.addEventListener('compositionend', () => { composing = false; schedule(); });
+  editor.addEventListener('input', () => { if (dialog.open) dialog.close(); schedule(); });
+  editor.addEventListener('scroll', requestPaint, { passive: true });
+  new ResizeObserver(requestPaint).observe(editor);
+  document.fonts?.ready.then(requestPaint);
+  document.fonts?.addEventListener('loadingdone', requestPaint);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', requestPaint);
+  matchMedia('(prefers-contrast: more)').addEventListener('change', requestPaint);
+  function requestPaint() {
+    if (paintFrame || !enabled || !result || composing) return;
+    paintFrame = requestAnimationFrame(() => { paintFrame = null; if (enabled && result && !composing) paint(); });
+  }
+  function layoutMirror() {
+    const style = getComputedStyle(editor);
+    for (const key of ['fontFamily', 'fontSize', 'fontWeight', 'fontStyle', 'lineHeight', 'letterSpacing', 'wordSpacing', 'textIndent', 'textAlign', 'textTransform', 'tabSize', 'direction', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft']) mirror.style[key] = style[key];
+    // clientWidth excludes native scrollbars and borders: match the actual text wrapping width.
+    mirror.style.width = editor.clientWidth + 'px';
+    mirror.style.left = editor.clientLeft + 'px';
+    mirror.style.top = editor.clientTop + 'px';
+    return style;
+  }
+  function charRect(offset) {
+    const position = Math.min(Math.max(0, offset), analyzedText.length);
+    range.setStart(mirrorText, position); range.setEnd(mirrorText, position + 1);
+    return range.getBoundingClientRect();
+  }
+  function visibleOffset(y, base) {
+    let low = 0, high = analyzedText.length;
+    while (low < high) {
+      const mid = (low + high) >>> 1;
+      if (charRect(mid).bottom - base.top < y) low = mid + 1;
+      else high = mid;
+    }
+    return low;
+  }
+  function paint() {
+    if (!mirrorText) return;
+    const style = layoutMirror();
+    const w = editor.clientWidth, h = editor.clientHeight;
+    const ratio = devicePixelRatio || 1;
+    canvas.style.left = editor.clientLeft + 'px'; canvas.style.top = editor.clientTop + 'px';
+    canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+    if (canvas.width !== Math.round(w * ratio) || canvas.height !== Math.round(h * ratio)) { canvas.width = Math.round(w * ratio); canvas.height = Math.round(h * ratio); }
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0); ctx.clearRect(0, 0, w, h);
+    hitAreas = [];
+    const base = mirror.getBoundingClientRect(), lineHeight = parseFloat(style.lineHeight);
+    const first = visibleOffset(editor.scrollTop - lineHeight, base);
+    const last = visibleOffset(editor.scrollTop + h + lineHeight, base) + 1;
+    const css = getComputedStyle(app), strongContrast = matchMedia('(prefers-contrast: more)').matches;
+    const visible = result.spans.map((s, index) => ({ s, index })).filter(({ s }) => s.end > first && s.start < last);
+    // Sentence tints first, then word underlines. Both retain separate hit targets.
+    visible.sort((a, b) => Number(a.s.category === 'weakener' || a.s.category === 'complex-word') - Number(b.s.category === 'weakener' || b.s.category === 'complex-word'));
+    for (const { s, index } of visible) {
+      const isSentence = s.category === 'hard' || s.category === 'very-hard';
+      const color = s.category === 'very-hard' ? 'red' : s.category === 'hard' ? 'yellow' : s.category === 'weakener' ? 'blue' : 'purple';
+      range.setStart(mirrorText, Math.max(s.start, first)); range.setEnd(mirrorText, Math.min(s.end, last, analyzedText.length));
+      for (const rect of range.getClientRects()) {
+        const x = rect.left - base.left - editor.scrollLeft, y = rect.top - base.top - editor.scrollTop;
+        if (y > h || y + rect.height < 0 || rect.width === 0) continue;
+        if (isSentence) { ctx.fillStyle = css.getPropertyValue(`--read-${color}-tint`).trim(); ctx.fillRect(x, y - 1, rect.width, rect.height + 2); }
+        ctx.strokeStyle = css.getPropertyValue(`--read-${color}-line`).trim();
+        ctx.lineWidth = (s.category === 'very-hard' ? 2.5 : 1.3) + (strongContrast ? 1 : 0);
+        ctx.setLineDash(s.category === 'weakener' ? [4, 3] : s.category === 'complex-word' ? [1, 3] : []);
+        const lineY = y + rect.height + (s.category === 'complex-word' ? 3 : isSentence ? 0 : 1.5);
+        ctx.beginPath(); ctx.moveTo(x, lineY); ctx.lineTo(x + rect.width, lineY); ctx.stroke();
+        if (index === focusedIndex) { ctx.setLineDash([2, 2]); ctx.strokeRect(x - 1, y - 1, rect.width + 2, rect.height + 5); }
+        hitAreas.push({ x, y: y - 1, width: rect.width, height: rect.height + 6, index });
+      }
+    }
+  }
+  editor.addEventListener('pointerdown', e => { lastPointer = { x: e.clientX, y: e.clientY }; });
+  editor.addEventListener('click', e => {
+    if (!enabled || !result || composing || !lastPointer || Math.hypot(e.clientX - lastPointer.x, e.clientY - lastPointer.y) > 4 || editor.selectionStart !== editor.selectionEnd) return;
+    const box = canvas.getBoundingClientRect(), x = e.clientX - box.left, y = e.clientY - box.top;
+    const matches = [...new Set(hitAreas.filter(a => x >= a.x && x <= a.x + a.width && y >= a.y && y <= a.y + a.height).map(a => a.index))];
+    if (!matches.length) return;
+    // Put word explanations first; overlapping sentence and subtype explanations remain reachable.
+    matches.sort((a, b) => (result.spans[a].end - result.spans[a].start) - (result.spans[b].end - result.spans[b].start));
+    activeFilter = null; openIssue(matches[0], matches);
+  });
+  function matchingIndices(filter) {
+    return result ? result.spans.flatMap((s, i) => !filter || s.category === filter || s.subtype === filter ? [i] : []) : [];
+  }
+  function nextIssue(filter, direction = 1) {
+    if (!result) return;
+    const indices = matchingIndices(filter);
+    if (!indices.length) return;
+    if (activeFilter !== filter) focusedIndex = -1;
+    activeFilter = filter;
+    const position = indices.indexOf(focusedIndex);
+    const next = position < 0 ? (direction > 0 ? 0 : indices.length - 1) : (position + direction + indices.length) % indices.length;
+    openIssue(indices[next]);
+  }
+  for (const b of filterButtons) b.addEventListener('click', () => nextIssue(b.dataset.category));
+  document.getElementById('readNext').addEventListener('click', () => nextIssue(activeFilter));
+  document.getElementById('readPrevious').addEventListener('click', () => nextIssue(activeFilter, -1));
+  document.getElementById('readClose').addEventListener('click', () => dialog.close());
+  let overlapping = [], overlapPosition = 0;
+  document.getElementById('readOverlap').addEventListener('click', () => { overlapPosition = (overlapPosition + 1) % overlapping.length; openIssue(overlapping[overlapPosition], overlapping, true); });
+  function openIssue(index, overlaps = [], retainOverlap = false) {
+    if (!result) return;
+    focusedIndex = index;
+    const span = result.spans[index];
+    if (!retainOverlap) { overlapping = overlaps; overlapPosition = 0; }
+    document.getElementById('readIssueTitle').textContent = labels[span.subtype || span.category];
+    document.getElementById('readQuote').textContent = analyzedText.slice(span.start, span.end);
+    document.getElementById('readExplanation').textContent = span.message;
+    document.getElementById('readSuggestions').textContent = span.suggestions?.length ? `Consider: ${span.suggestions.join(' · ')}. Apply a change yourself if it fits.` : '';
+    const overlapButton = document.getElementById('readOverlap');
+    overlapButton.hidden = overlapping.length < 2;
+    overlapButton.textContent = `Other flag (${overlapPosition + 1}/${overlapping.length})`;
+    layoutMirror();
+    const box = mirror.getBoundingClientRect(), target = charRect(span.start);
+    const top = target.top - box.top;
+    if (top < editor.scrollTop || top + target.height > editor.scrollTop + editor.clientHeight) editor.scrollTop = Math.max(0, top - editor.clientHeight / 3);
+    requestPaint();
+    if (!dialog.open) { restoreFocus = document.activeElement; dialog.showModal(); }
+  }
+  dialog.addEventListener('click', e => {
+    const box = dialog.getBoundingClientRect();
+    if (e.target === dialog && (e.clientX < box.left || e.clientX > box.right || e.clientY < box.top || e.clientY > box.bottom)) dialog.close();
+  });
+  dialog.addEventListener('close', () => { restoreFocus?.focus({ preventScroll: true }); requestPaint(); });
+  dialog.addEventListener('keydown', e => {
+    // Focus the native editor before the browser handles the original typing key.
+    // Do not cancel it or synthesize replacement text (either could break native undo).
+    if (e.key.length === 1 && e.key !== ' ' && !e.ctrlKey && !e.metaKey && !e.altKey) { restoreFocus = editor; dialog.close(); editor.focus({ preventScroll: true }); }
+  });
+  let savedMode = null;
+  try { savedMode = localStorage.getItem(modeKey); } catch (_) {}
+  // Opt-in default requested by the author; existing documents remain in ordinary Typo mode.
+  setMode(savedMode === 'on');
+})();
+</script>
 </body>
 </html>
